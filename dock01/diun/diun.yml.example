@@ -1,0 +1,29 @@
+# Copier ce fichier vers :
+# /docker/diun/diun.yml sur chaque host
+
+log:
+  level: info
+  format: text
+
+watch:
+  schedule: "0 */12 * * *"    # toutes les 12h
+  runOnStartup: true
+
+providers:
+  docker:
+    endpoint: unix:///var/run/docker.sock
+    watchByDefault: true       # surveille tous les conteneurs
+    tlsVerify: false
+
+db:
+  path: /data/db/diun.db
+
+notif:
+  mail:
+    host: "mail.example.local"
+    port: 25
+    ssl: false
+    insecureSkipVerify: false
+    from: "dock01@example.local"       # à changer par nomhost@example.local
+    to:
+      - "admin@example.local"

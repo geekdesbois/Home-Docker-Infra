@@ -1,0 +1,24 @@
+services:
+  diun:
+    image: crazymax/diun:4.30.0
+    container_name: diun
+
+    restart: unless-stopped
+
+    env_file:
+      - /etc/portainer-env/diun.env
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /docker/diun:/data
+
+    command: ["serve", "--config", "/data/diun.yml"]
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    labels:
+      - diun.enable=false   # évite que Diun se surveille lui-même
