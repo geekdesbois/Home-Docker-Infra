@@ -5,8 +5,8 @@ services:
 
     restart: unless-stopped
 
-    env_file:
-      - /etc/portainer-env/diun.env
+    environment:
+      TZ: Europe/Paris
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro

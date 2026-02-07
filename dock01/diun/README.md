@@ -10,7 +10,6 @@ Sur chaque hôte :
   diun.yml
   db/diun.db
 
-/etc/portainer-env/diun.env
 
 ## Bootstrap
 
