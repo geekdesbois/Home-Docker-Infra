@@ -1,0 +1,27 @@
+services:
+  vaultwarden:
+    image: vaultwarden/server:1.35.2
+    container_name: vaultwarden
+
+    restart: unless-stopped
+
+    labels:
+      - diun.enable=true
+
+    env_file:
+      - /etc/portainer-env/vaultwarden.env
+
+    environment:
+      TZ: Europe/Paris
+
+    volumes:
+      - /docker/vaultwarden/data:/data
+
+    ports:
+      - "11001:80"
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
