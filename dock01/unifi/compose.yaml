@@ -1,0 +1,63 @@
+services:
+  unifi-db:
+    image: mongo:8
+    container_name: unifi-db
+
+    volumes:
+      - /docker/unifi/data:/data/db
+      - /docker/unifi/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh --quiet --eval 'db.adminCommand({ ping: 1 })' || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  unifi-network-application:
+    image: lscr.io/linuxserver/unifi-network-application:latest
+    container_name: unifi-network-application
+
+    depends_on:
+      unifi-db:
+        condition: service_healthy
+
+    env_file:
+      - /etc/portainer-env/unifi.env
+
+    environment:
+      TZ: Europe/Paris
+
+    volumes:
+      - /docker/unifi/config:/config
+
+    ports:
+      - 3478:3478/udp
+      - 10001:10001/udp
+      - 8080:8080
+      - 8081:8081
+      - 8443:8443
+      # - 1900:1900/udp
+      # - 8843:8843
+      # - 8880:8880
+      # - 6789:6789
+      # - 5514:5514/udp
+
+    restart: unless-stopped
+
+    labels:
+      - diun.enable=true
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
