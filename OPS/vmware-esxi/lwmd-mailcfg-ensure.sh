@@ -1,4 +1,6 @@
 #!/bin/bash
+# script remote from esxi
+
 set -euo pipefail
 
 ESXI_IP="172.16.70.8"

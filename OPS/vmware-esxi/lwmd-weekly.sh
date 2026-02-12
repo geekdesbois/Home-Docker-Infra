@@ -1,4 +1,5 @@
 #!/bin/bash
+# script remote from esxi
 set -euo pipefail
 
 SSH="ssh -i /root/.ssh/esxi_lwmd_rsa -o IdentitiesOnly=yes root@172.16.70.8"
