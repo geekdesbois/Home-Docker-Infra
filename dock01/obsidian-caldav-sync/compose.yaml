@@ -21,4 +21,4 @@ services:
         max-file: "3"
 
     labels:
-      - diun.enable=true
+      - diun.enable=false
