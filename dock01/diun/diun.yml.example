@@ -24,6 +24,6 @@ notif:
     port: 25
     ssl: false
     insecureSkipVerify: false
-    from: "dock01@example.local"       # à changer par nomhost@example.local
+    from: "dock01@example.local"       # a changer par nomhost@example.local
     to:
       - "admin@example.local"
