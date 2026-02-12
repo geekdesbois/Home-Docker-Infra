@@ -27,6 +27,8 @@ services:
       - /mnt/media/musicblackbox:/media/musicblackbox
       - /mnt/media/ebooksblackbox:/media/ebooksblackbox
 
+    gpus: all  
+
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:32400/identity >/dev/null || exit 1"]
       interval: 30s
