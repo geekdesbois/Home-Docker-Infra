@@ -1,0 +1,2 @@
+@reboot sleep 120 && /usr/local/sbin/lwmd-mailcfg-ensure.sh >> /var/log/lwmd-mailcfg-ensure.log 2>&1
+5 3 * * * /usr/local/sbin/lwmd-mailcfg-ensure.sh >> /var/log/lwmd-mailcfg-ensure.log 2>&1

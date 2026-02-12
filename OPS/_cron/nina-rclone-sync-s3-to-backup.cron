@@ -1,0 +1,1 @@
+30 0 * * * /usr/local/sbin/rclone-sync-s3-to-backup.sh

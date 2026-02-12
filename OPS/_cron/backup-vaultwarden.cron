@@ -1,0 +1,1 @@
+30 3 * * * /usr/local/bin/backup-vaultwarden.sh >> /var/log/vaultwarden-backup.log 2>&1

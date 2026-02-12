@@ -1,0 +1,1 @@
+30 3 * * * /usr/local/bin/plex-db-dump.sh >> /var/log/backup-plex.log 2>&1
