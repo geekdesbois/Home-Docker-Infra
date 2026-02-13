@@ -1,7 +1,6 @@
 services:
   node_exporter:
     image: prom/node-exporter:v1.8.2
-    container_name: node_exporter
     pid: host
     command:
       - "--path.rootfs=/host"
