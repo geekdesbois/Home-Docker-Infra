@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  stirling-pdf:
+    image: ghcr.io/stirling-tools/stirling-pdf:latest
+    container_name: stirling-pdf
+    restart: unless-stopped
+
+    environment:
+      - TZ=Europe/Paris
+
+    # On publie uniquement sur l'IP SRV de dock01 (pas 0.0.0.0)
+    # Ainsi, pas d'accès "accidentel" depuis d'autres réseaux via une IP différente.
+    ports:
+      - "172.16.70.11:8088:8080"
+
+    volumes:
+      - /docker/stirling-pdf/config:/config
+      - /docker/stirling-pdf/data:/data
+
+    # Hygiène / sécurité (optionnel mais recommandé)
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    labels:
+      - diun.enable=true
+      
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
