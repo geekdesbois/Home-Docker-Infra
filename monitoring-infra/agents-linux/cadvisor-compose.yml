@@ -10,8 +10,12 @@ services:
       - /:/rootfs:ro
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
+
+      # socket docker (double)
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /run/docker.sock:/run/docker.sock:ro
+
     command:
-      - "--docker=unix:///var/run/docker.sock"    
+      - "--docker=unix:///var/run/docker.sock"
       - "--docker_only=true"
       - "--housekeeping_interval=10s"
