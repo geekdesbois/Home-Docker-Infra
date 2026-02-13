@@ -1,0 +1,16 @@
+groups:
+- name: dock01-lvm
+  rules:
+  - alert: Dock01_LVM_Locked_At_Boot
+    expr: up{host="dock01"} == 0
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "DOCK01 bloqué au boot (LVM/LUKS)"
+      description: |
+        La VM DOCK01 (172.16.70.11) ne répond plus sur node_exporter depuis 5 minutes.
+
+        Action :
+        - Ouvrir la console ESXi
+        - Déverrouiller le volume LVM/LUKS

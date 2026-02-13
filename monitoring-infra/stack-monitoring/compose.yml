@@ -12,6 +12,8 @@ services:
       - /docker/monitoring/prometheus/rules:/etc/prometheus/rules:ro
       - /docker/monitoring/prometheus/data:/prometheus
     restart: unless-stopped
+    ports:
+      - "9090:9090"    
     networks: [mon_net]
 
   alertmanager:
@@ -24,6 +26,8 @@ services:
       - /docker/monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
       - /docker/monitoring/alertmanager/data:/alertmanager
     restart: unless-stopped
+    ports:
+      - "9093:9093"    
     networks: [mon_net]
 
   loki:
@@ -34,6 +38,8 @@ services:
       - /docker/monitoring/loki/loki-config.yml:/etc/loki/loki-config.yml:ro
       - /docker/monitoring/loki/data:/loki
     restart: unless-stopped
+    ports:
+      - "3100:3100"
     networks: [mon_net]
 
   grafana:
