@@ -29,24 +29,25 @@ scrape_configs:
         labels:
           host: dock04-nina
 
-  - job_name: "cadvisor"
+  - job_name: cadvisor
     static_configs:
-      - targets:
-          - "172.16.70.12:8080"
-        labels:
-          host: "dock02-pwr"
+      - targets: ["172.16.70.12:8080"]
+        labels: { host: "dock02-pwr" }
+      - targets: ["172.16.70.11:8080"]
+        labels: { host: "dock01" }
+      - targets: ["172.16.20.1:8080"]
+        labels: { host: "dock04-nina" }
 
-  - job_name: "cadvisor"
-    static_configs:
-      - targets:
-          - "172.16.70.11:8080"
-        labels:
-          host: "dock01"
+    metric_relabel_configs:
+      # Garder uniquement les séries "containers docker"
+      - source_labels: [id]
+        regex: '/system\.slice/docker-[0-9a-f]{64}\.scope'
+        action: keep
 
-  - job_name: "cadvisor"
-    static_configs:
-      - targets:
-          - "172.16.20.1:8080"
-        labels:
-          host: "dock04-nina"
+      # (Optionnel) virer les labels ultra-verboses qui explosent la cardinalité
+      - regex: 'container_label_org_opencontainers_.*'
+        action: labeldrop
+      - regex: 'container_label_com_docker_compose_project_config_files|container_label_com_docker_compose_project_working_dir'
+        action: labeldrop
+
 
