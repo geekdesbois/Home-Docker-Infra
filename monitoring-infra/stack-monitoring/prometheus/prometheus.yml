@@ -28,3 +28,25 @@ scrape_configs:
       - targets: ["172.16.20.1:9100"]
         labels:
           host: dock04-nina
+
+  - job_name: "cadvisor"
+    static_configs:
+      - targets:
+          - "172.16.70.12:8080"
+        labels:
+          host: "dock02-pwr"
+
+  - job_name: "cadvisor"
+    static_configs:
+      - targets:
+          - "172.16.70.11:8080"
+        labels:
+          host: "dock01"
+
+  - job_name: "cadvisor"
+    static_configs:
+      - targets:
+          - "172.16.20.1:8080"
+        labels:
+          host: "dock04-nina"
+
