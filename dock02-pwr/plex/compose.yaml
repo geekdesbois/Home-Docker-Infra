@@ -20,7 +20,7 @@ services:
       # PLEX_CLAIM: ${PLEX_CLAIM:-}
 
     volumes:
-      - /docker/plex/config:/config
+      - /srv/plex/config:/config
       - /srv/plex/transcode:/transcode
       - /mnt/media/videoblackbox:/media/videoblackbox
       - /mnt/media/videopriveblackbox:/media/videopriveblackbox

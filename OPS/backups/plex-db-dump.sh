@@ -2,7 +2,7 @@
 set -euo pipefail
 
 BASE="/srv/plex/config/Library/Application Support/Plex Media Server/Plug-in Support/Databases"
-DEST="/docker/plex/backup/db-dumps"
+DEST="/srv/plex/backup/db-dumps"
 TS="$(date +%F_%H-%M-%S)"
 
 mkdir -p "$DEST"
