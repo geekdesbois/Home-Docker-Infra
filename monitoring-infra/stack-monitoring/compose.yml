@@ -5,7 +5,7 @@ services:
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.path=/prometheus"
-      - "--storage.tsdb.retention.time=90d"
+      - "--storage.tsdb.retention.time=30d"
       - "--web.enable-lifecycle"
     volumes:
       - /docker/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
