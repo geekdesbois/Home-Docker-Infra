@@ -13,4 +13,4 @@ tar -czf "$DEST/plex_db_$TS.tgz" -C "$BASE" .
 
 docker start plex >/dev/null
 
-find "$DEST" -type f -mtime +14 -delete
+find "$DEST" -type f -mtime +3 -delete
