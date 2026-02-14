@@ -21,7 +21,7 @@ services:
 
     volumes:
       - /docker/plex/config:/config
-      - /docker/plex/transcode:/transcode
+      - /srv/plex/transcode:/transcode
       - /mnt/media/videoblackbox:/media/videoblackbox
       - /mnt/media/videopriveblackbox:/media/videopriveblackbox
       - /mnt/media/musicblackbox:/media/musicblackbox
