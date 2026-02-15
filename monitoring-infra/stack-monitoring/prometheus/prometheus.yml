@@ -64,4 +64,122 @@ scrape_configs:
         target_label: service
         action: replace
 
+  - job_name: "windows"
+    static_configs:
+      - targets:
+          - "172.16.70.1:9182"
+        labels:
+          host: "master"
+          role: "dc"
 
+  - job_name: blackbox-icmp
+    metrics_path: /probe
+    params:
+      module: [icmp]
+    static_configs:
+      - targets: ["172.16.70.12"]
+        labels:
+          host: dock02-pwr
+          fqdn: dock02-pwr.leahparnal.org
+      - targets: ["172.16.70.11"]
+        labels:
+          host: dock01
+          fqdn: dock01.leahparnal.org
+      - targets: ["172.16.20.1"]
+        labels:
+          host: dock04-nina
+          fqdn: dock04-nina.leahparnal.org
+      - targets: ["172.16.70.1"]
+        labels:
+          host: master
+          fqdn: master.leahparnal.org
+          role: ad-dns
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  - job_name: blackbox-dns-udp
+    metrics_path: /probe
+    params:
+      module: [dns_udp]
+    static_configs:
+      - targets: ["172.16.70.1:53"]
+        labels:
+          host: master
+          fqdn: master.leahparnal.org
+          role: ad-dns
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  - job_name: blackbox-dns-tcp
+    metrics_path: /probe
+    params:
+      module: [dns_tcp]
+    static_configs:
+      - targets: ["172.16.70.1:53"]
+        labels:
+          host: master
+          fqdn: master.leahparnal.org
+          role: ad-dns
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  - job_name: blackbox-ad-tcp
+    metrics_path: /probe
+    params:
+      module: [tcp_connect]
+    static_configs:
+      - targets: ["172.16.70.1:389"]
+        labels: { host: master, fqdn: master.leahparnal.org, role: ad, service: ldap }
+      - targets: ["172.16.70.1:636"]
+        labels: { host: master, fqdn: master.leahparnal.org, role: ad, service: ldaps }
+      - targets: ["172.16.70.1:88"]
+        labels: { host: master, fqdn: master.leahparnal.org, role: ad, service: kerberos }
+      - targets: ["172.16.70.1:135"]
+        labels: { host: master, fqdn: master.leahparnal.org, role: ad, service: rpc_epm }
+      - targets: ["172.16.70.1:445"]
+        labels: { host: master, fqdn: master.leahparnal.org, role: ad, service: smb }
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  - job_name: blackbox-ad-tcp
+    metrics_path: /probe
+    params:
+      module: [tcp_connect]
+    static_configs:
+      - targets: ["172.16.70.1:389"]
+        labels: { host: master, fqdn: master.leahparnal.org, role: ad, service: ldap }
+      - targets: ["172.16.70.1:636"]
+        labels: { host: master, fqdn: master.leahparnal.org, role: ad, service: ldaps }
+      - targets: ["172.16.70.1:88"]
+        labels: { host: master, fqdn: master.leahparnal.org, role: ad, service: kerberos }
+      - targets: ["172.16.70.1:135"]
+        labels: { host: master, fqdn: master.leahparnal.org, role: ad, service: rpc_epm }
+      - targets: ["172.16.70.1:445"]
+        labels: { host: master, fqdn: master.leahparnal.org, role: ad, service: smb }
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115

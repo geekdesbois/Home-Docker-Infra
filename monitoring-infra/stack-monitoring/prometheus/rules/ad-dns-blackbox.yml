@@ -1,0 +1,52 @@
+groups:
+  - name: blackbox_ad_dns
+    rules:
+      - alert: HostPingDown
+        expr: probe_success{job="blackbox-icmp",host="master"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          team: infra
+        annotations:
+          summary: "Ping DOWN: {{ $labels.fqdn }}"
+          description: "ICMP probe failed for {{ $labels.fqdn }} ({{ $labels.instance }})."
+
+      - alert: DnsUdpDown
+        expr: probe_success{job="blackbox-dns-udp",host="master"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          team: infra
+        annotations:
+          summary: "DNS UDP DOWN: {{ $labels.fqdn }}"
+          description: "DNS over UDP probe failed for {{ $labels.fqdn }} ({{ $labels.instance }})."
+
+      - alert: DnsTcpDown
+        expr: probe_success{job="blackbox-dns-tcp",host="master"} == 0
+        for: 2m
+        labels:
+          severity: warning
+          team: infra
+        annotations:
+          summary: "DNS TCP DOWN: {{ $labels.fqdn }}"
+          description: "DNS over TCP probe failed for {{ $labels.fqdn }} ({{ $labels.instance }})."
+
+      - alert: AdPortDown
+        expr: probe_success{job="blackbox-ad-tcp",host="master"} == 0
+        for: 3m
+        labels:
+          severity: critical
+          team: infra
+        annotations:
+          summary: "AD port DOWN: {{ $labels.fqdn }} ({{ $labels.service }})"
+          description: "TCP connect failed for {{ $labels.service }} on {{ $labels.fqdn }} ({{ $labels.instance }})."
+
+      - alert: BlackboxLatencyHigh
+        expr: probe_duration_seconds{host="master",job=~"blackbox-.*"} > 1
+        for: 5m
+        labels:
+          severity: warning
+          team: infra
+        annotations:
+          summary: "Blackbox latency high: {{ $labels.fqdn }} ({{ $labels.job }})"
+          description: "Probe duration > 1s for 5m on {{ $labels.fqdn }} (job={{ $labels.job }})."
