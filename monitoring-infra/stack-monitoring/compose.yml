@@ -67,6 +67,17 @@ services:
     restart: unless-stopped
     networks: [mon_net]
 
+  blackbox-exporter:
+    image: prom/blackbox-exporter:v0.25.0
+    container_name: blackbox-exporter
+    command:
+      - "--config.file=/etc/blackbox/blackbox.yml"
+    volumes:
+      - /docker/monitoring/blackbox-exporter/blackbox.yml:/etc/blackbox/blackbox.yml:ro
+    restart: unless-stopped
+    # pas besoin d'exposer 9115 sur le LAN : Prometheus l'atteint via mon_net
+    networks: [mon_net]
+
 networks:
   mon_net:
     name: mon_net
