@@ -50,27 +50,14 @@ scrape_configs:
       - regex: 'container_label_com_docker_compose_project_config_files|container_label_com_docker_compose_project_working_dir'
         action: labeldrop
 
-      # Garder uniquement les containers docker
-      - source_labels: [id]
-        regex: '/system\.slice/docker-[0-9a-f]{64}\.scope'
-        action: keep
-    
       # Renommage lisible
       - source_labels: [container_label_com_docker_compose_project]
         target_label: project
         action: replace
-    
+
       - source_labels: [container_label_com_docker_compose_service]
         target_label: service
         action: replace
-
-  - job_name: "windows"
-    static_configs:
-      - targets:
-          - "172.16.70.1:9182"
-        labels:
-          host: "master"
-          role: "dc"
 
   - job_name: blackbox-icmp
     metrics_path: /probe
@@ -102,6 +89,14 @@ scrape_configs:
       - target_label: __address__
         replacement: blackbox-exporter:9115
 
+  - job_name: "windows"
+    static_configs:
+      - targets:
+          - "172.16.70.1:9182"
+        labels:
+          host: "master"
+          role: "dc"
+
   - job_name: blackbox-dns-udp
     metrics_path: /probe
     params:
@@ -130,29 +125,6 @@ scrape_configs:
           host: master
           fqdn: master.leahparnal.org
           role: ad-dns
-    relabel_configs:
-      - source_labels: [__address__]
-        target_label: __param_target
-      - source_labels: [__param_target]
-        target_label: instance
-      - target_label: __address__
-        replacement: blackbox-exporter:9115
-
-  - job_name: blackbox-ad-tcp
-    metrics_path: /probe
-    params:
-      module: [tcp_connect]
-    static_configs:
-      - targets: ["172.16.70.1:389"]
-        labels: { host: master, fqdn: master.leahparnal.org, role: ad, service: ldap }
-      - targets: ["172.16.70.1:636"]
-        labels: { host: master, fqdn: master.leahparnal.org, role: ad, service: ldaps }
-      - targets: ["172.16.70.1:88"]
-        labels: { host: master, fqdn: master.leahparnal.org, role: ad, service: kerberos }
-      - targets: ["172.16.70.1:135"]
-        labels: { host: master, fqdn: master.leahparnal.org, role: ad, service: rpc_epm }
-      - targets: ["172.16.70.1:445"]
-        labels: { host: master, fqdn: master.leahparnal.org, role: ad, service: smb }
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
