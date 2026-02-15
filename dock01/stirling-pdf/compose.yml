@@ -20,7 +20,7 @@ services:
       - no-new-privileges:true
 
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/"]
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8080/ >/dev/null || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 5
