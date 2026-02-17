@@ -1,0 +1,38 @@
+groups:
+- name: esxi-datastores
+  rules:
+  - alert: ESXiDatastoreInaccessible
+    expr: vmware_datastore_accessible == 0
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "ESXi datastore inaccessible"
+      description: "Datastore {{ $labels.ds_name }} sur {{ $labels.host_name }} est INACCESSIBLE."
+
+  - alert: ESXiDatastoreMaintenanceMode
+    expr: vmware_datastore_maintenance_mode == 1
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "ESXi datastore en maintenance"
+      description: "Datastore {{ $labels.ds_name }} sur {{ $labels.host_name }} est en maintenance."
+
+  - alert: ESXiDatastoreAlmostFull
+    expr: 100 * (1 - (vmware_datastore_freespace_size / vmware_datastore_capacity_size)) > 85
+    for: 15m
+    labels:
+      severity: warning
+    annotations:
+      summary: "ESXi datastore presque plein (>85%)"
+      description: "Datastore {{ $labels.ds_name }} sur {{ $labels.host_name }} est au-dessus de 85% depuis 15 min."
+
+  - alert: ESXiDatastoreFullCritical
+    expr: 100 * (1 - (vmware_datastore_freespace_size / vmware_datastore_capacity_size)) > 92
+    for: 10m
+    labels:
+      severity: critical
+    annotations:
+      summary: "ESXi datastore critique (>92%)"
+      description: "Datastore {{ $labels.ds_name }} sur {{ $labels.host_name }} est au-dessus de 92% depuis 10 min."

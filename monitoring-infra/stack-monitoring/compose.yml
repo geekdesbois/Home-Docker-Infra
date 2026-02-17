@@ -45,6 +45,8 @@ services:
   grafana:
     image: grafana/grafana:11.1.4
     container_name: grafana
+    env_file:
+      - /etc/portainer-env/grafana.env
     environment:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
