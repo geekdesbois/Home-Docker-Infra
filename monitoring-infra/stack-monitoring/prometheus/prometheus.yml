@@ -81,6 +81,11 @@ scrape_configs:
           host: master
           fqdn: master.leahparnal.org
           role: ad-dns
+      - targets: ["172.16.70.2"]
+        labels:
+          host: datac
+          fqdn: datac.leahparnal.org
+          role: file-server
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -96,6 +101,11 @@ scrape_configs:
         labels:
           host: "master"
           role: "dc"
+      - targets:
+          - "172.16.70.2:9182"
+        labels:
+          host: "datac"
+          role: "file-server"
 
   - job_name: blackbox-dns-udp
     metrics_path: /probe
