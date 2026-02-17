@@ -93,8 +93,8 @@ services:
     image: pryorda/vmware_exporter:latest
     container_name: vmware-exporter
     env_file:
-      - /docker/monitoring/vmware-exporter/.env
-    restart: unless-stopped
+      - /etc/portainer-env/vmware-exporter.env
+t: unless-stopped
     networks: [mon_net]
 
 networks:
