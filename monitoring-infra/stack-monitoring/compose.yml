@@ -94,7 +94,7 @@ services:
     container_name: vmware-exporter
     env_file:
       - /etc/portainer-env/vmware-exporter.env
-t: unless-stopped
+    restart: unless-stopped
     networks: [mon_net]
 
 networks:
