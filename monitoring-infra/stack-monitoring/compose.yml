@@ -88,6 +88,8 @@ services:
       - "--log.level=info"
     volumes:
       - /docker/monitoring/snmp-exporter/snmp.yml:/etc/snmp_exporter/snmp.yml:ro
+    ports:
+      - "9116:9116"      
     restart: unless-stopped
     networks: [mon_net]
 

@@ -12,6 +12,9 @@ auths:
     auth_protocol: MD5
     priv_protocol: DES
     version: 2
+  monitoring_ro_v2:
+    version: 2c
+    community: MONITORING_RO  
 modules:
   apcups:
     walk:
@@ -57601,6 +57604,9 @@ modules:
       help: Central Orchestration Lic expiry date - 1.3.6.1.4.1.2604.5.1.5.9.2
       datetime_pattern: '%b %d %Y'
   synology:
+    max_repetitions: 25
+    retries: 5
+    timeout: 30s
     walk:
     - 1.3.6.1.4.1.6574.1
     - 1.3.6.1.4.1.6574.101
@@ -59076,6 +59082,16 @@ modules:
         type: DisplayString
       - labels: []
         labelname: serviceInfoIndex
+  synology_safe:
+    max_repetitions: 25
+    retries: 5
+    timeout: 20s
+    walk:
+      # Synology (DSM) : base + storage/health
+      - 1.3.6.1.2.1.1         # sys (sysDescr etc.) -> utile pour valider vite
+      - 1.3.6.1.4.1.6574.1       # system
+      - 1.3.6.1.4.1.6574.2       # disks
+      - 1.3.6.1.4.1.6574.3       # RAID / storage  
   system:
     walk:
     - 1.3.6.1.2.1.1
