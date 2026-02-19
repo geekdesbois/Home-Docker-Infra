@@ -1,6 +1,6 @@
 modules:
   esxi_v2:
-    version: 2c
+    version: 2
     auth:
       community: MONITORING_RO
     walk:
@@ -10,3 +10,12 @@ modules:
       - 1.3.6.1.4.1.6876.2.1.1  # VM table
       - 1.3.6.1.4.1.6876.3      # host res + HBAs
       - 1.3.6.1.4.1.6876.4.20   # hw/health-ish (optionnel)
+
+  synology:
+    version: 2
+    auth:
+      community: MONITORING_RO
+    walk:
+      - 1.3.6.1.4.1.6574
+    timeout: 10s
+    retries: 3
