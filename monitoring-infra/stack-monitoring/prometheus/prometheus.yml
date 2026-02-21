@@ -185,8 +185,7 @@ scrape_configs:
         target_label: instance
       - target_label: __address__
         replacement: snmp-exporter:9116
-  
-  
+
   - job_name: "snmp-synology"
     metrics_path: /snmp
     params:
@@ -203,7 +202,3 @@ scrape_configs:
         target_label: instance
       - target_label: __address__
         replacement: snmp-exporter:9116
-
-
-
-
