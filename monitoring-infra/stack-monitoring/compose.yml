@@ -98,6 +98,8 @@ services:
     container_name: vmware-exporter
     env_file:
       - /etc/portainer-env/vmware-exporter.env
+    ports:
+      - "9272:9272" 
     restart: unless-stopped
     networks: [mon_net]
 
