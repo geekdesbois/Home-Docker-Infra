@@ -1,0 +1,52 @@
+services:
+  syslog:
+    image: balabit/syslog-ng:4.7.1
+    container_name: syslog
+    restart: unless-stopped
+    networks: [dmz]
+    ports:
+      - "514:514/udp"
+      - "514:514/tcp"
+    volumes:
+      - /docker/dmz-wan/syslog/syslog-ng.conf:/etc/syslog-ng/syslog-ng.conf:ro
+      - /docker/dmz-wan/syslog/log:/var/log
+
+  haproxy:
+    image: haproxy:3.0
+    container_name: haproxy
+    restart: unless-stopped
+    depends_on: [syslog]
+    networks: [dmz]
+    ports:
+      - "80:80/tcp"
+      - "443:443/tcp"
+      # Si tu veux exposer d'autres frontends TCP plus tard, tu ajouteras des ports ici
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - /docker/dmz-wan/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - /docker/dmz-wan/haproxy/crt-list.txt:/usr/local/etc/haproxy/crt-list.txt:ro
+      - /docker/dmz-wan/haproxy/certs:/usr/local/etc/haproxy/certs:ro
+    healthcheck:
+      test: ["CMD-SHELL", "haproxy -c -f /usr/local/etc/haproxy/haproxy.cfg"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  haproxy-exporter:
+    image: prom/haproxy-exporter:v0.15.0
+    container_name: haproxy-exporter
+    restart: unless-stopped
+    networks: [dmz]
+    depends_on: [haproxy]
+    environment:
+      - TZ=${TZ}
+      # Export via stats CSV (simple et efficace)
+      - HAPROXY_SCRAPE_URI=http://${HAPROXY_STATS_USER}:${HAPROXY_STATS_PASS}@haproxy:8404/stats;csv
+    ports:
+      - "9101:9101/tcp"
+
+networks:
+  dmz:
+    name: dmz-wan
+    driver: bridge

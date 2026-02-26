@@ -1,0 +1,10 @@
+filenames:
+  - /var/log/haproxy.log
+labels:
+  type: haproxy
+
+---
+filenames:
+  - /var/log/ssh.log
+labels:
+  type: syslog
