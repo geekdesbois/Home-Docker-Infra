@@ -29,6 +29,12 @@ scrape_configs:
         labels:
           host: dock04-nina
 
+  - job_name: dock00
+    static_configs:
+      - targets: ["172.16.90.1:9100"]
+        labels:
+          host: dock00-sec         
+
   - job_name: cadvisor
     static_configs:
       - targets: ["172.16.70.12:8080"]
@@ -37,6 +43,8 @@ scrape_configs:
         labels: { host: "dock01" }
       - targets: ["172.16.20.1:8080"]
         labels: { host: "dock04-nina" }
+      - targets: ["172.16.90.1:8080"]
+        labels: { host: "dock00-sec" }        
 
     metric_relabel_configs:
       # Garder uniquement les séries "containers docker"
