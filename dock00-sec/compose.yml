@@ -15,14 +15,15 @@ services:
     image: haproxy:3.0
     container_name: haproxy
     env_file:
-      - /etc/portainer-env/haproxy.env
+      - /etc/portainer-env/dmzsec.env
     restart: unless-stopped
     depends_on: [syslog]
     networks: [dmzsec]
     ports:
       - "80:80/tcp"
       - "443:443/tcp"
-      # Si tu veux exposer d'autres frontends TCP plus tard, tu ajouteras des ports ici
+      # Ports TCP futurs (SFTP, etc.) -> à ajouter ici plus tard
+      # - "2222:2222/tcp"
     environment:
       - TZ=${TZ}
     volumes:
@@ -38,15 +39,38 @@ services:
   haproxy-exporter:
     image: prom/haproxy-exporter:v0.15.0
     container_name: haproxy-exporter
+    env_file:
+      - /etc/portainer-env/dmzsec.env
     restart: unless-stopped
     networks: [dmzsec]
     depends_on: [haproxy]
     environment:
       - TZ=${TZ}
-      # Export via stats CSV (simple et efficace)
       - HAPROXY_SCRAPE_URI=http://${HAPROXY_STATS_USER}:${HAPROXY_STATS_PASS}@haproxy:8404/stats;csv
     ports:
       - "9101:9101/tcp"
+
+  crowdsec:
+    image: crowdsecurity/crowdsec:latest
+    container_name: crowdsec
+    env_file:
+      - /etc/portainer-env/dmzsec.env
+    restart: unless-stopped
+    networks: [dmzsec]
+    depends_on: [syslog]
+    environment:
+      - TZ=${TZ}
+      # Collections de base utiles ici
+      - COLLECTIONS=crowdsecurity/haproxy crowdsecurity/ssh
+    volumes:
+      - /docker/crowdsec/data:/var/lib/crowdsec/data
+      - /docker/crowdsec/config:/etc/crowdsec
+      - /docker/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml:ro
+      # CrowdSec lit les logs syslog
+      - /docker/syslog/log:/var/log:ro
+    ports:
+      # LAPI (pour bouncer OPNsense)
+      - "8080:8080/tcp"
 
 networks:
   dmzsec:

@@ -5,6 +5,6 @@ labels:
 
 ---
 filenames:
-  - /var/log/ssh.log
+  - /var/log/messages.log
 labels:
   type: syslog
