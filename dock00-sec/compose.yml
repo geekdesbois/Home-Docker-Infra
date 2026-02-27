@@ -14,6 +14,8 @@ services:
   haproxy:
     image: haproxy:3.0
     container_name: haproxy
+    env_file:
+      - /etc/portainer-env/haproxy.env
     restart: unless-stopped
     depends_on: [syslog]
     networks: [dmzsec]
