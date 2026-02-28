@@ -30,6 +30,8 @@ services:
       - /docker/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
       - /docker/haproxy/crt-list.txt:/usr/local/etc/haproxy/crt-list.txt:ro
       - /docker/haproxy/certs:/usr/local/etc/haproxy/certs:ro
+      - /docker/haproxy/hosts_known_http.lst:/usr/local/etc/haproxy/hosts_known_http.lst:ro
+      - /docker/haproxy/hosts_synology_http.lst:/usr/local/etc/haproxy/hosts_synology_http.lst:ro
     healthcheck:
       test: ["CMD-SHELL", "haproxy -c -f /usr/local/etc/haproxy/haproxy.cfg"]
       interval: 30s
