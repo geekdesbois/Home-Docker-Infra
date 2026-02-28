@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     networks:
       dmzsec:
-        ipv4_address: 172.31.90.11    
+        ipv4_address: 172.31.90.10    
     ports:
       - "514:514/udp"
       - "514:514/tcp"
