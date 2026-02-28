@@ -1,2 +1,2 @@
-/docker/haproxy/certs/zonelibre.live.pem
-/docker/haproxy/certs/nina.fm.pem
+/usr/local/etc/haproxy/certs/zonelibre.live.pem
+/usr/local/etc/haproxy/certs/nina.fm.pem
