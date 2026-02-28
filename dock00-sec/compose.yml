@@ -67,7 +67,7 @@ services:
     environment:
       - TZ=${TZ}
       # Collections de base utiles ici
-      - COLLECTIONS=crowdsecurity/haproxy crowdsecurity/ssh
+      - COLLECTIONS=crowdsecurity/haproxy
     volumes:
       - /docker/crowdsec/data:/var/lib/crowdsec/data
       - /docker/crowdsec/config:/etc/crowdsec
