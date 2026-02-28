@@ -3,7 +3,9 @@ services:
     image: balabit/syslog-ng:4.7.1
     container_name: syslog
     restart: unless-stopped
-    networks: [dmzsec]
+    networks:
+      dmzsec:
+        ipv4_address: 172.31.90.11    
     ports:
       - "514:514/udp"
       - "514:514/tcp"
@@ -18,7 +20,9 @@ services:
       - /etc/portainer-env/dmzsec.env
     restart: unless-stopped
     depends_on: [syslog]
-    networks: [dmzsec]
+    networks:
+      dmzsec:
+        ipv4_address: 172.31.90.11    
     ports:
       - "80:80/tcp"
       - "443:443/tcp"
@@ -78,3 +82,6 @@ networks:
   dmzsec:
     name: dmz-wan
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.31.90.0/24
