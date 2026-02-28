@@ -65,7 +65,7 @@ services:
     volumes:
       - /docker/crowdsec/data:/var/lib/crowdsec/data
       - /docker/crowdsec/config:/etc/crowdsec
-      - /docker/crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml:ro
+      - /docker/crowdsec/config/acquis.yaml:/etc/crowdsec/acquis.yaml:ro
       # CrowdSec lit les logs syslog
       - /docker/syslog/log:/var/log:ro
     ports:
