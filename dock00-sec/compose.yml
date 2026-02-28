@@ -70,7 +70,7 @@ services:
       - /docker/syslog/log:/var/log:ro
     ports:
       # LAPI (pour bouncer OPNsense)
-      - "8080:8080/tcp"
+      - "8888:8080/tcp"
 
 networks:
   dmzsec:
