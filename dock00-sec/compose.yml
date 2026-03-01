@@ -52,7 +52,7 @@ services:
     depends_on: [haproxy]
     environment:
       - TZ=${TZ}
-      - HAPROXY_SCRAPE_URI=http://${HAPROXY_STATS_USER}:${HAPROXY_STATS_PASS}@haproxy:8404/stats;csv
+      - HAPROXY_SCRAPE_URI=${HAPROXY_SCRAPE_URI}
     ports:
       - "9101:9101/tcp"
 

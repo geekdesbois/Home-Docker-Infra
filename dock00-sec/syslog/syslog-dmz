@@ -1,0 +1,10 @@
+# fichier à créer sur l'hôte dans /etc/logrotate.d/
+/docker/syslog/log/*.log {
+  daily
+  rotate 14
+  compress
+  delaycompress
+  missingok
+  notifempty
+  copytruncate
+}

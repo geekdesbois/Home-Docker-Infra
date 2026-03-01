@@ -2,9 +2,3 @@ filenames:
   - /var/log/haproxy.log
 labels:
   type: haproxy
-
----
-filenames:
-  - /var/log/messages.log
-labels:
-  type: syslog
