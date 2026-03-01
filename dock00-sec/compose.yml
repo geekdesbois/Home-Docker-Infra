@@ -36,7 +36,7 @@ services:
       - /docker/haproxy/certs:/usr/local/etc/haproxy/certs:ro
       - /docker/haproxy/hosts_known_http.lst:/usr/local/etc/haproxy/hosts_known_http.lst:ro
       - /docker/haproxy/hosts_synology_http.lst:/usr/local/etc/haproxy/hosts_synology_http.lst:ro
-      - /docker/haproxy/run:/var/run
+      - /docker/haproxy/sock:/sock
     healthcheck:
       test: ["CMD-SHELL", "haproxy -c -f /usr/local/etc/haproxy/haproxy.cfg"]
       interval: 30s
@@ -54,9 +54,9 @@ services:
     environment:
       - TZ=${TZ}
     volumes:
-      - /docker/haproxy/run:/var/run:ro    
+      - /docker/haproxy/sock:/sock:ro
     command:
-      - --haproxy.scrape-uri=unix:///var/run/haproxy.sock
+      - --haproxy.scrape-uri=unix:///sock/haproxy.sock
     ports:
       - "9101:9101/tcp"
 
