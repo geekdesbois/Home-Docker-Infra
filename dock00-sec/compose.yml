@@ -52,10 +52,6 @@ services:
     depends_on: [haproxy]
     environment:
       - TZ=${TZ}
-    command:
-      - --haproxy.scrape-uri=http://haproxy:8404/stats;csv
-      - --haproxy.user=$(HAPROXY_STATS_USER)
-      - --haproxy.password=$(HAPROXY_STATS_PASS)
     ports:
       - "9101:9101/tcp"
 
