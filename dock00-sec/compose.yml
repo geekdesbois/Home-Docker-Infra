@@ -53,6 +53,8 @@ services:
     environment:
       - TZ=${TZ}
       - HAPROXY_SCRAPE_URI=${HAPROXY_SCRAPE_URI}
+    command:
+      - --haproxy.scrape-uri=http://stats:TONPASS@haproxy:8404/stats;csv  
     ports:
       - "9101:9101/tcp"
 
