@@ -52,6 +52,8 @@ services:
     depends_on: [haproxy]
     environment:
       - TZ=${TZ}
+    command:
+      - --haproxy.scrape-uri=${HAPROXY_SCRAPE_URI}      
     ports:
       - "9101:9101/tcp"
 
