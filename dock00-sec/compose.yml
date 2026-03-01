@@ -53,7 +53,7 @@ services:
     environment:
       - TZ=${TZ}
     command:
-      - --haproxy.scrape-uri=${HAPROXY_SCRAPE_URI}      
+      - --haproxy.scrape-uri=http://stats:QDFhjijh456Qngoq2t3DF4@haproxy:8404/stats;csv   
     ports:
       - "9101:9101/tcp"
 
