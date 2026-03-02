@@ -218,3 +218,11 @@ scrape_configs:
         labels:
           host: "dock00-sec"
           role: "dmzsec-haproxy"
+
+  - job_name: "crowdsec"
+    static_configs:
+      - targets:
+          - "172.16.90.1:6060"
+        labels:
+          host: "dock00-sec"
+          role: "dmzsec-crowdsec"    
