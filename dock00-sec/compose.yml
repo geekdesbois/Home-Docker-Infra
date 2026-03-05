@@ -26,6 +26,7 @@ services:
     ports:
       - "80:80/tcp"
       - "443:443/tcp"
+      - "8404:8404/tcp"      
       # Ports TCP futurs (SFTP, etc.) -> à ajouter ici plus tard
       # - "2222:2222/tcp"
     environment:
