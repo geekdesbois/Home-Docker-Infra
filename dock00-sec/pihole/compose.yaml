@@ -24,6 +24,7 @@ services:
 
     cap_add:
       - NET_ADMIN
+      - SYS_TIME
 
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/admin/ >/dev/null 2>&1 || exit 1"]
