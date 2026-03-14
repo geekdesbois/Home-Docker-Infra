@@ -9,6 +9,7 @@ services:
       - "53:53/udp"
       - "8001:80/tcp"
       - "8003:443/tcp"
+      - "123:123/udp"      
 
     env_file:
       - /etc/portainer-env/pihole.env
