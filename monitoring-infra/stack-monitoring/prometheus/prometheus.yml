@@ -33,7 +33,13 @@ scrape_configs:
     static_configs:
       - targets: ["172.16.90.1:9100"]
         labels:
-          host: dock00-sec         
+          host: dock00-sec
+
+  - job_name: cerbere
+    static_configs:
+      - targets: ["172.16.70.254:9100"]
+        labels:
+          host: cerbere              
 
   - job_name: cadvisor
     static_configs:
