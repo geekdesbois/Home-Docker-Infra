@@ -1,0 +1,87 @@
+type: email           # Don't change
+name: email_default   # Must match the registered plugin in the profile
+
+# One of "trace", "debug", "info", "warn", "error", "off"
+log_level: info
+
+group_wait: 60s        # Time to wait collecting alerts before relaying a message to this plugin, eg "30s"
+group_threshold: 1   # Amount of alerts that triggers a message before <group_wait> has expired, eg "10"
+max_retry: 3         # Number of attempts to relay messages to plugins in case of error
+timeout: 20s          # Time to wait for response from the plugin before considering the attempt a failure, eg "10s"
+
+#-------------------------
+# plugin-specific options
+
+# The following template receives a list of models.Alert objects
+# The output goes in the email message body
+format: |
+  <html>
+  <body style="font-family: Arial, sans-serif; line-height: 1.5;">
+    <h2 style="color:#c0392b;">🚨 CrowdSec - IP bloquée</h2>
+
+    {{range .}}
+    {{$alert := .}}
+
+    <h3>Attaque détectée</h3>
+    {{if $alert.MachineID}}<b>Machine :</b> {{$alert.MachineID}}<br>{{end}}
+    {{if $alert.Scenario}}<b>Scénario :</b> {{$alert.Scenario}}<br>{{end}}
+    {{if $alert.StartAt}}<b>Date :</b> {{$alert.StartAt}}<br>{{end}}
+    <b>Remédiation :</b> {{$alert.Remediation}}<br>
+
+    <h3>Source</h3>
+    {{if $alert.Source.Value}}<b>IP :</b> {{$alert.Source.Value}}<br>{{end}}
+    {{if $alert.Source.Cn}}<b>Pays :</b> {{$alert.Source.Cn}}<br>{{end}}
+
+    <h3>Décision</h3>
+    {{range $alert.Decisions}}
+    {{if .Type}}<b>Action :</b> {{.Type}}<br>{{end}}
+    {{if .Duration}}<b>Durée :</b> {{.Duration}}<br>{{end}}
+    {{if .Scope}}<b>Scope :</b> {{.Scope}}<br>{{end}}
+    {{end}}
+
+    <h3>Contexte</h3>
+    {{range $alert.Events}}
+      {{if index .Meta "method"}}<b>Méthode :</b> {{index .Meta "method"}}<br>{{end}}
+      {{if index .Meta "target_uri"}}<b>URI :</b> {{index .Meta "target_uri"}}<br>{{end}}
+      {{if index .Meta "status"}}<b>Status :</b> {{index .Meta "status"}}<br>{{end}}
+    {{end}}
+
+    {{if $alert.Source.Value}}
+    <h3>Analyse</h3>
+    <a href="https://app.crowdsec.net/cti/{{$alert.Source.Value}}">CTI CrowdSec</a><br>
+    <a href="https://www.whois.com/whois/{{$alert.Source.Value}}">Whois</a>
+    {{end}}
+
+    <hr>
+    {{end}}
+  </body>
+  </html>
+
+smtp_host: 172.16.70.3            # example: smtp.gmail.com
+smtp_username:        # Replace with your actual username
+smtp_password:        # Replace with your actual password
+smtp_port: 25           # Common values are any of [25, 465, 587, 2525]
+auth_type: "none"           # Valid choices are "none", "crammd5", "login", "plain"
+sender_name: "CrowdSec"
+sender_email: crowdsec_dock00-sec@terre-du-milieu.org        # example: foo@gmail.com
+email_subject: "CrowdSec Notification"
+receiver_emails:
+  - geekdesbois@zonelibre.live
+# - email2@gmail.com
+
+# One of "ssltls", "starttls", "none"
+encryption_type: "none"
+
+# If you need to set the HELO hostname:
+# helo_host: "localhost"
+
+# If the email server is hitting the default timeouts (10 seconds), you can increase them here
+#
+# connect_timeout: 10s
+# send_timeout: 10s
+
+---
+
+# type: email
+# name: email_second_notification
+# ...
