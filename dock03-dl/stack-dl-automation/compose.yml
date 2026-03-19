@@ -14,10 +14,10 @@ services:
     volumes:
       - /docker/gluetun:/gluetun
     ports:
-      - "${PORT_QBT_WEBUI}:8080"   # qB WebUI (derrière VPN)
-      - "${PORT_PROWLARR}:9696"    # Prowlarr (derrière VPN)
-      - "${PORT_FIREFOX_HTTP}:3000"     # Firefox sandbox (derrière VPN)
-      - "${PORT_FIREFOX_HTTPS}:3001"     # Firefox sandbox (derrière VPN)
+      - "8888:8080"   # qB WebUI (derrière VPN)
+      - "9696:9696"    # Prowlarr (derrière VPN)
+      - "3000:3000"     # Firefox sandbox (derrière VPN)
+      - "3001:3001"     # Firefox sandbox (derrière VPN)
     restart: unless-stopped
 
   qbittorrent:
@@ -33,7 +33,7 @@ services:
       - WEBUI_PORT=8080
     volumes:
       - /docker/qbittorrent:/config
-      - ${DATA_ROOT:-/srv/downloads/qbittorrent}:/data
+      - /srv/downloads/qbittorrent:/data
     depends_on: [ gluetun ]
     restart: unless-stopped
 
@@ -65,7 +65,7 @@ services:
       - TZ=${TZ}
     volumes:
       - /docker/firefox:/config
-      - ${DATA_ROOT:-/srv/downloads/qbittorrent}:/data
+      - /srv/downloads/qbittorrent:/data
     depends_on: [ gluetun ]
     restart: unless-stopped
 
@@ -82,11 +82,11 @@ services:
       - TZ=${TZ}
     volumes:
       - /docker/radarr:/config
-      - ${DATA_ROOT:-/srv/downloads/qbittorrent}:/data
-      - ${MEDIA_GOLD:-/mnt/media-gold}:/media-gold:ro
-      - ${MEDIA_UPGRADE:-/mnt/media-upgrade}:/media:rw
+      - /srv/downloads/qbittorrent:/data
+      - /mnt/media-gold:/media-gold:ro
+      - /mnt/media-upgrade:/media:rw
     ports:
-      - "${PORT_RADARR}:7878"
+      - "7878:7878"
     restart: unless-stopped
 
   sonarr:
@@ -101,11 +101,11 @@ services:
       - TZ=${TZ}
     volumes:
       - /docker/sonarr:/config
-      - ${DATA_ROOT:-/srv/downloads/qbittorrent}:/data
-      - ${MEDIA_GOLD:-/mnt/media-gold}:/media-gold:ro
-      - ${MEDIA_UPGRADE:-/mnt/media-upgrade}:/media:rw
+      - /srv/downloads/qbittorrent:/data
+      - /mnt/media-gold:/media-gold:ro
+      - /mnt/media-upgrade:/media:rw
     ports:
-      - "${PORT_SONARR}:8989"
+      - "8989:8989"
     restart: unless-stopped
 
   lidarr:
@@ -120,11 +120,11 @@ services:
       - TZ=${TZ}
     volumes:
       - /docker/lidarr:/config
-      - ${DATA_ROOT:-/srv/downloads/qbittorrent}:/data
-      - ${MEDIA_GOLD:-/mnt/media-gold}:/media-gold:ro
-      - ${MEDIA_UPGRADE:-/mnt/media-upgrade}:/media:rw
+      - /srv/downloads/qbittorrent:/data
+      - /mnt/media-gold:/media-gold:ro
+      - /mnt/media-upgrade:/media:rw
     ports:
-      - "${PORT_LIDARR}:8686"
+      - "8686:8686"
     restart: unless-stopped
 
 # readarr:
@@ -139,11 +139,11 @@ services:
 #     - TZ=${TZ}
 #   volumes:
 #     - /docker/readarr:/config
-#     - ${DATA_ROOT:-/srv/downloads/qbittorrent}:/data
-#     - ${MEDIA_GOLD:-/mnt/media-gold}:/media-gold:ro
-#     - ${MEDIA_UPGRADE:-/mnt/media-upgrade}:/media:rw
+#     - /srv/downloads/qbittorrent:/data
+#     - /mnt/media-gold:/media-gold:ro
+#     - /mnt/media-upgrade:/media:rw
 #   ports:
-#     - "${PORT_READARR}:8787"
+#     - "8787:8787"
 #   restart: unless-stopped
 
   # ClamAV : signatures persistantes + scan manuel (ou cron ensuite)
@@ -157,5 +157,5 @@ services:
       - TZ=${TZ}
     volumes:
       - /docker/clamav:/var/lib/clamav
-      - ${DATA_ROOT:-/srv/downloads/qbittorrent}:/scan:ro
+      - /srv/downloads/qbittorrent:/scan:ro
     restart: unless-stopped
