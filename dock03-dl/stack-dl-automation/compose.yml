@@ -137,7 +137,7 @@ services:
     restart: unless-stopped
 
   readarr:
-    image: lscr.io/linuxserver/readarr:latest
+    image: lscr.io/linuxserver/readarr:develop
     container_name: readarr
     env_file: 
       - /etc/portainer-env/dl-automation.env    
