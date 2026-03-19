@@ -42,7 +42,7 @@ services:
       - WEBUI_PORT=8080
     volumes:
       - /docker/qbittorrent:/config
-      - ${DATA_ROOT}:/data
+      - ${DATA_ROOT:-/srv/downloads/qbittorrent}:/data
     depends_on: [ gluetun ]
     restart: unless-stopped
 
@@ -74,7 +74,7 @@ services:
       - TZ=${TZ}
     volumes:
       - /docker/firefox:/config
-      - ${DATA_ROOT}:/data
+      - ${DATA_ROOT:-/srv/downloads/qbittorrent}:/data
     depends_on: [ gluetun ]
     restart: unless-stopped
 
@@ -91,9 +91,9 @@ services:
       - TZ=${TZ}
     volumes:
       - /docker/radarr:/config
-      - ${DATA_ROOT}:/data
-      - ${MEDIA_GOLD}:/media-gold:ro
-      - ${MEDIA_UPGRADE}:/media:rw
+      - ${DATA_ROOT:-/srv/downloads/qbittorrent}:/data
+      - ${MEDIA_GOLD:-/mnt/media-gold}:/media-gold:ro
+      - ${MEDIA_UPGRADE:-/mnt/media-upgrade}:/media:rw
     ports:
       - "${PORT_RADARR}:7878"
     restart: unless-stopped
@@ -110,9 +110,9 @@ services:
       - TZ=${TZ}
     volumes:
       - /docker/sonarr:/config
-      - ${DATA_ROOT}:/data
-      - ${MEDIA_GOLD}:/media-gold:ro
-      - ${MEDIA_UPGRADE}:/media:rw
+      - ${DATA_ROOT:-/srv/downloads/qbittorrent}:/data
+      - ${MEDIA_GOLD:-/mnt/media-gold}:/media-gold:ro
+      - ${MEDIA_UPGRADE:-/mnt/media-upgrade}:/media:rw
     ports:
       - "${PORT_SONARR}:8989"
     restart: unless-stopped
@@ -129,9 +129,9 @@ services:
       - TZ=${TZ}
     volumes:
       - /docker/lidarr:/config
-      - ${DATA_ROOT}:/data
-      - ${MEDIA_GOLD}:/media-gold:ro
-      - ${MEDIA_UPGRADE}:/media:rw
+      - ${DATA_ROOT:-/srv/downloads/qbittorrent}:/data
+      - ${MEDIA_GOLD:-/mnt/media-gold}:/media-gold:ro
+      - ${MEDIA_UPGRADE:-/mnt/media-upgrade}:/media:rw
     ports:
       - "${PORT_LIDARR}:8686"
     restart: unless-stopped
@@ -148,9 +148,9 @@ services:
       - TZ=${TZ}
     volumes:
       - /docker/readarr:/config
-      - ${DATA_ROOT}:/data
-      - ${MEDIA_GOLD}:/media-gold:ro
-      - ${MEDIA_UPGRADE}:/media:rw
+      - ${DATA_ROOT:-/srv/downloads/qbittorrent}:/data
+      - ${MEDIA_GOLD:-/mnt/media-gold}:/media-gold:ro
+      - ${MEDIA_UPGRADE:-/mnt/media-upgrade}:/media:rw
     ports:
       - "${PORT_READARR}:8787"
     restart: unless-stopped
