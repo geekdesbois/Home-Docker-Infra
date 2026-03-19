@@ -27,9 +27,9 @@ services:
     env_file: 
       - /etc/portainer-env/dl-automation.env    
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
       - WEBUI_PORT=8080
     volumes:
       - /docker/qbittorrent:/config
@@ -44,9 +44,9 @@ services:
     env_file: 
       - /etc/portainer-env/dl-automation.env    
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
     volumes:
       - /docker/prowlarr:/config
     depends_on: [ gluetun ]
@@ -60,9 +60,9 @@ services:
     env_file: 
       - /etc/portainer-env/dl-automation.env    
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
     volumes:
       - /docker/firefox:/config
       - /srv/downloads/qbittorrent:/data
@@ -77,9 +77,9 @@ services:
       - /etc/portainer-env/dl-automation.env    
     dns: [ "${DNS_PIHOLE}" ]
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
     volumes:
       - /docker/radarr:/config
       - /srv/downloads/qbittorrent:/data
@@ -96,9 +96,9 @@ services:
       - /etc/portainer-env/dl-automation.env    
     dns: [ "${DNS_PIHOLE}" ]
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
     volumes:
       - /docker/sonarr:/config
       - /srv/downloads/qbittorrent:/data
@@ -115,9 +115,9 @@ services:
       - /etc/portainer-env/dl-automation.env    
     dns: [ "${DNS_PIHOLE}" ]
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
     volumes:
       - /docker/lidarr:/config
       - /srv/downloads/qbittorrent:/data
@@ -134,9 +134,9 @@ services:
 #     - /etc/portainer-env/dl-automation.env    
 #   dns: [ "${DNS_PIHOLE}" ]
 #   environment:
-#     - PUID=${PUID}
-#     - PGID=${PGID}
-#     - TZ=${TZ}
+#     - PUID=1000
+#     - PGID=1000
+#     - TZ=Europe/Paris
 #   volumes:
 #     - /docker/readarr:/config
 #     - /srv/downloads/qbittorrent:/data
@@ -154,7 +154,7 @@ services:
       - /etc/portainer-env/dl-automation.env    
     dns: [ "${DNS_PIHOLE}" ]
     environment:
-      - TZ=${TZ}
+      - TZ=Europe/Paris
     volumes:
       - /docker/clamav:/var/lib/clamav
       - /srv/downloads/qbittorrent:/scan:ro
