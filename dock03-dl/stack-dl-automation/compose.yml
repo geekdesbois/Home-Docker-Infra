@@ -136,24 +136,24 @@ services:
       - "${PORT_LIDARR}:8686"
     restart: unless-stopped
 
-  readarr:
-    image: lscr.io/linuxserver/readarr:develop
-    container_name: readarr
-    env_file: 
-      - /etc/portainer-env/dl-automation.env    
-    dns: [ "${DNS_PIHOLE}" ]
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - /docker/readarr:/config
-      - ${DATA_ROOT:-/srv/downloads/qbittorrent}:/data
-      - ${MEDIA_GOLD:-/mnt/media-gold}:/media-gold:ro
-      - ${MEDIA_UPGRADE:-/mnt/media-upgrade}:/media:rw
-    ports:
-      - "${PORT_READARR}:8787"
-    restart: unless-stopped
+# readarr:
+#   image: lscr.io/linuxserver/readarr:develop
+#   container_name: readarr
+#   env_file: 
+#     - /etc/portainer-env/dl-automation.env    
+#   dns: [ "${DNS_PIHOLE}" ]
+#   environment:
+#     - PUID=${PUID}
+#     - PGID=${PGID}
+#     - TZ=${TZ}
+#   volumes:
+#     - /docker/readarr:/config
+#     - ${DATA_ROOT:-/srv/downloads/qbittorrent}:/data
+#     - ${MEDIA_GOLD:-/mnt/media-gold}:/media-gold:ro
+#     - ${MEDIA_UPGRADE:-/mnt/media-upgrade}:/media:rw
+#   ports:
+#     - "${PORT_READARR}:8787"
+#   restart: unless-stopped
 
   # ClamAV : signatures persistantes + scan manuel (ou cron ensuite)
   clamav:
