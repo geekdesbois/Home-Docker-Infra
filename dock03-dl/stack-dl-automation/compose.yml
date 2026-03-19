@@ -14,7 +14,7 @@ services:
     volumes:
       - /docker/gluetun:/gluetun
     ports:
-      - "8888:8080"   # qB WebUI (derrière VPN)
+      - "8888:8888"   # qB WebUI (derrière VPN)
       - "9696:9696"    # Prowlarr (derrière VPN)
       - "3000:3000"     # Firefox sandbox (derrière VPN)
       - "3001:3001"     # Firefox sandbox (derrière VPN)
