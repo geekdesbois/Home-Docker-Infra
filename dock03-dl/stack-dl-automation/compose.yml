@@ -1,0 +1,152 @@
+services:
+  gluetun:
+    image: qmcgaw/gluetun:latest
+    container_name: gluetun
+    cap_add: [ "NET_ADMIN" ]
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      - TZ=${TZ}
+      - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER}
+      - VPN_TYPE=${VPN_TYPE}
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+      - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
+      - SERVER_COUNTRIES=${SERVER_COUNTRIES}
+      - VPN_PORT_FORWARDING=${VPN_PORT_FORWARDING}
+      - PORT_FORWARD_ONLY=${PORT_FORWARD_ONLY}
+      - VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c 'wget -O- -nv --retry-connrefused --post-data "json={\"listen_port\":{{PORT}},\"current_network_interface\":\"{{VPN_INTERFACE}}\",\"random_port\":false,\"upnp\":false}" http://127.0.0.1:8080/api/v2/app/setPreferences'
+      - VPN_PORT_FORWARDING_DOWN_COMMAND=/bin/sh -c 'wget -O- -nv --retry-connrefused --post-data "json={\"listen_port\":0,\"current_network_interface\":\"lo\"}" http://127.0.0.1:8080/api/v2/app/setPreferences'
+      - DNS_ADDRESS=${DNS_PIHOLE}
+      - IPV6=off
+    volumes:
+      - /docker/gluetun:/gluetun
+    ports:
+      - "${PORT_QBT_WEBUI}:8080"   # qB WebUI (derrière VPN)
+      - "${PORT_PROWLARR}:9696"    # Prowlarr (derrière VPN)
+      - "${PORT_FIREFOX_HTTP}:3000"     # Firefox sandbox (derrière VPN)
+      - "${PORT_FIREFOX_HTTPS}:3001"     # Firefox sandbox (derrière VPN)
+    restart: unless-stopped
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    network_mode: "service:gluetun"
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - WEBUI_PORT=8080
+    volumes:
+      - /docker/qbittorrent:/config
+      - ${DATA_ROOT}:/data
+    depends_on: [ gluetun ]
+    restart: unless-stopped
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    network_mode: "service:gluetun"
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /docker/prowlarr:/config
+    depends_on: [ gluetun ]
+    restart: unless-stopped
+
+  firefox_sandbox:
+    image: lscr.io/linuxserver/firefox:latest
+    container_name: firefox-sandbox
+    network_mode: "service:gluetun"
+    shm_size: "1gb"
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /docker/firefox:/config
+      - ${DATA_ROOT}:/data
+    depends_on: [ gluetun ]
+    restart: unless-stopped
+
+  # ARR hors VPN (mais DNS Pi-hole), accès aux médias RO/RW
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    dns: [ "${DNS_PIHOLE}" ]
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /docker/radarr:/config
+      - ${DATA_ROOT}:/data
+      - ${MEDIA_GOLD}:/media-gold:ro
+      - ${MEDIA_UPGRADE}:/media:rw
+    ports:
+      - "${PORT_RADARR}:7878"
+    restart: unless-stopped
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    dns: [ "${DNS_PIHOLE}" ]
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /docker/sonarr:/config
+      - ${DATA_ROOT}:/data
+      - ${MEDIA_GOLD}:/media-gold:ro
+      - ${MEDIA_UPGRADE}:/media:rw
+    ports:
+      - "${PORT_SONARR}:8989"
+    restart: unless-stopped
+
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    dns: [ "${DNS_PIHOLE}" ]
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /docker/lidarr:/config
+      - ${DATA_ROOT}:/data
+      - ${MEDIA_GOLD}:/media-gold:ro
+      - ${MEDIA_UPGRADE}:/media:rw
+    ports:
+      - "${PORT_LIDARR}:8686"
+    restart: unless-stopped
+
+  readarr:
+    image: lscr.io/linuxserver/readarr:latest
+    container_name: readarr
+    dns: [ "${DNS_PIHOLE}" ]
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /docker/readarr:/config
+      - ${DATA_ROOT}:/data
+      - ${MEDIA_GOLD}:/media-gold:ro
+      - ${MEDIA_UPGRADE}:/media:rw
+    ports:
+      - "${PORT_READARR}:8787"
+    restart: unless-stopped
+
+  # ClamAV : signatures persistantes + scan manuel (ou cron ensuite)
+  clamav:
+    image: clamav/clamav:stable
+    container_name: clamav
+    dns: [ "${DNS_PIHOLE}" ]
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - /docker/clamav:/var/lib/clamav
+      - ${DATA_ROOT}:/scan:ro
+    restart: unless-stopped
