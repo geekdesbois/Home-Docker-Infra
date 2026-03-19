@@ -5,6 +5,8 @@ services:
     cap_add: [ "NET_ADMIN" ]
     devices:
       - /dev/net/tun:/dev/net/tun
+    env_file: 
+      - /etc/portainer-env/dl-automation.env
     environment:
       - TZ=${TZ}
       - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER}
@@ -31,6 +33,8 @@ services:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
     network_mode: "service:gluetun"
+    env_file: 
+      - /etc/portainer-env/dl-automation.env    
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -46,6 +50,8 @@ services:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
     network_mode: "service:gluetun"
+    env_file: 
+      - /etc/portainer-env/dl-automation.env    
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -60,6 +66,8 @@ services:
     container_name: firefox-sandbox
     network_mode: "service:gluetun"
     shm_size: "1gb"
+    env_file: 
+      - /etc/portainer-env/dl-automation.env    
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -74,6 +82,8 @@ services:
   radarr:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
+    env_file: 
+      - /etc/portainer-env/dl-automation.env    
     dns: [ "${DNS_PIHOLE}" ]
     environment:
       - PUID=${PUID}
@@ -91,6 +101,8 @@ services:
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
+    env_file: 
+      - /etc/portainer-env/dl-automation.env    
     dns: [ "${DNS_PIHOLE}" ]
     environment:
       - PUID=${PUID}
@@ -108,6 +120,8 @@ services:
   lidarr:
     image: lscr.io/linuxserver/lidarr:latest
     container_name: lidarr
+    env_file: 
+      - /etc/portainer-env/dl-automation.env    
     dns: [ "${DNS_PIHOLE}" ]
     environment:
       - PUID=${PUID}
@@ -125,6 +139,8 @@ services:
   readarr:
     image: lscr.io/linuxserver/readarr:latest
     container_name: readarr
+    env_file: 
+      - /etc/portainer-env/dl-automation.env    
     dns: [ "${DNS_PIHOLE}" ]
     environment:
       - PUID=${PUID}
@@ -143,6 +159,8 @@ services:
   clamav:
     image: clamav/clamav:stable
     container_name: clamav
+    env_file: 
+      - /etc/portainer-env/dl-automation.env    
     dns: [ "${DNS_PIHOLE}" ]
     environment:
       - TZ=${TZ}
