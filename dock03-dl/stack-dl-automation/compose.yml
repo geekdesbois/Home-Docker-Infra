@@ -166,5 +166,5 @@ services:
       - TZ=${TZ}
     volumes:
       - /docker/clamav:/var/lib/clamav
-      - ${DATA_ROOT}:/scan:ro
+      - ${DATA_ROOT:-/srv/downloads/qbittorrent}:/scan:ro
     restart: unless-stopped
