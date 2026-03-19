@@ -35,6 +35,12 @@ scrape_configs:
         labels:
           host: dock00-sec
 
+  - job_name: dock03
+    static_configs:
+      - targets: ["172.16.40.10:9100"]
+        labels:
+          host: dock03-dl
+
   - job_name: cerbere
     static_configs:
       - targets: ["172.16.70.254:9100"]
@@ -50,7 +56,9 @@ scrape_configs:
       - targets: ["172.16.20.1:8080"]
         labels: { host: "dock04-nina" }
       - targets: ["172.16.90.1:8080"]
-        labels: { host: "dock00-sec" }        
+        labels: { host: "dock00-sec" }      
+      - targets: ["172.16.40.10:8080"]
+        labels: { host: "dock03-dl" }     
 
     metric_relabel_configs:
       # Garder uniquement les séries "containers docker"
