@@ -1,6 +1,6 @@
 services:
   plex:
-    image: ghcr.io/home-operations/plex:1.41.4.9463-c9e5f30c2
+    image: ghcr.io/home-operations/plex:1.41.4
     container_name: plex
     restart: unless-stopped
     network_mode: bridge
