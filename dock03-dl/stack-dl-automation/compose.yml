@@ -8,9 +8,11 @@ services:
     env_file: 
       - /etc/portainer-env/dl-automation.env
     environment:
-      - VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c 'wget -O- -nv --retry-connrefused --post-data "json={\"listen_port\":{{PORT}},\"current_network_interface\":\"{{VPN_INTERFACE}}\",\"random_port\":false,\"upnp\":false}" http://127.0.0.1:8888/api/v2/app/setPreferences'
-      - VPN_PORT_FORWARDING_DOWN_COMMAND=/bin/sh -c 'wget -O- -nv --retry-connrefused --post-data "json={\"listen_port\":0,\"current_network_interface\":\"lo\"}" http://127.0.0.1:8888/api/v2/app/setPreferences'
-      - IPV6=off
+      VPN_PORT_FORWARDING_UP_COMMAND: >-
+        /bin/sh -c 'wget -qO- --header="Referer: http://127.0.0.1:8888" --header="Origin: http://127.0.0.1:8888" --post-data "json={\"listen_port\":{{PORT}},\"current_network_interface\":\"{{VPN_INTERFACE}}\",\"random_port\":false,\"upnp\":false}" http://127.0.0.1:8888/api/v2/app/setPreferences >/dev/null'
+      VPN_PORT_FORWARDING_DOWN_COMMAND: >-
+        /bin/sh -c 'wget -qO- --header="Referer: http://127.0.0.1:8888" --header="Origin: http://127.0.0.1:8888" --post-data "json={\"listen_port\":0,\"current_network_interface\":\"lo\"}" http://127.0.0.1:8888/api/v2/app/setPreferences >/dev/null'
+      IPV6: "off"
     volumes:
       - /docker/gluetun:/gluetun
     ports:
