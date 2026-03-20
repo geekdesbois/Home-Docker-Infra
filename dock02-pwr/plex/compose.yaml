@@ -1,6 +1,6 @@
 services:
   plex:
-    image: lscr.io/linuxserver/plex:latest
+    image: plexinc/pms-docker:plexpass
     container_name: plex
     restart: unless-stopped
     network_mode: host
@@ -20,9 +20,12 @@ services:
       # PLEX_CLAIM: ${PLEX_CLAIM:-}
 
     devices:
-      - /dev/dri/card1
-      - /dev/dri/renderD129
-
+      - /dev/nvidia0
+      - /dev/nvidiactl
+      - /dev/nvidia-modeset
+      - /dev/nvidia-uvm
+      - /dev/nvidia-uvm-tools
+      
     volumes:
       - /srv/plex/config:/config
       - /srv/plex/transcode:/transcode
