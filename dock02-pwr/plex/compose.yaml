@@ -1,6 +1,6 @@
 services:
   plex:
-    image: ghcr.io/onedr0p/plex:latest
+    image: ghcr.io/onedr0p/plex:1
     container_name: plex
     restart: unless-stopped
     network_mode: bridge
