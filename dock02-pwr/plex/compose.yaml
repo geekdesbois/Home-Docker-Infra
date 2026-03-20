@@ -1,6 +1,6 @@
 services:
   plex:
-    image: ghcr.io/hotio/plex:latest
+    image: plexinc/pms-docker:latest
     container_name: plex
     restart: unless-stopped
     network_mode: bridge
