@@ -4,6 +4,7 @@ services:
     container_name: plex
     restart: unless-stopped
     network_mode: host
+    runtime: nvidia
 
     env_file:
       - /etc/portainer-env/plex.env
