@@ -1,6 +1,6 @@
 services:
   plex:
-    image: plexinc/pms-docker:latest
+    image: ghcr.io/onedr0p/plex:latest
     container_name: plex
     restart: unless-stopped
     network_mode: bridge
