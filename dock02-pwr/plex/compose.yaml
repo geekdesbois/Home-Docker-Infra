@@ -13,11 +13,15 @@ services:
     environment:
       TZ: Europe/Paris
       NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_REQUIRE_CUDA: "cuda>=12.0"
       NVIDIA_DRIVER_CAPABILITIES: compute,video,utility
       ADVERTISE_IP: ${ADVERTISE_IP:-https://172.16.70.12:32400/}
       PLEX_UID: ${PLEX_UID:-1000}
       PLEX_GID: ${PLEX_GID:-1000}
       # PLEX_CLAIM: ${PLEX_CLAIM:-}
+
+    devices:
+      - nvidia.com/gpu=all  
 
     volumes:
       - /srv/plex/config:/config
