@@ -88,9 +88,9 @@ services:
     volumes:
       - /docker/firefox:/config
       - /srv/downloads/qbittorrent:/data
-    ports:
-      - "3000:3000"
-      - "3001:3001"
+#   ports:
+#     - "3000:3000"
+#     - "3001:3001"
 #     - "8082:8082"      
     depends_on: [ gluetun ]
     restart: unless-stopped
