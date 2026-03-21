@@ -63,6 +63,13 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Paris
+      - CUSTOM_USER=abc
+      - PASSWORD=abc
+      - SUBFOLDER=/
+      - TITLE=Firefox
+      - DISABLE_IPV6=true
+      - NO_DECOR=1
+      - ENABLE_HTTPS=false
     volumes:
       - /docker/firefox:/config
       - /srv/downloads/qbittorrent:/data
