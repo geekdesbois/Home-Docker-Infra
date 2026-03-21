@@ -11,14 +11,22 @@ services:
       VPN_PORT_FORWARDING_UP_COMMAND: /gluetun/update_qbt_port.sh {{PORT}} {{VPN_INTERFACE}}
       VPN_PORT_FORWARDING_DOWN_COMMAND: /gluetun/reset_qbt_port.sh
       IPV6: "off"
+      # Proxy HTTP Gluetun
+      HTTPPROXY: "on"
+      HTTPPROXY_LISTENING_ADDRESS: ":8889"
+      # optionnel si tu veux une auth proxy :
+      # HTTPPROXY_USER: "proxyuser"
+      # HTTPPROXY_PASSWORD: "proxypass"
+
     volumes:
       - /docker/gluetun:/gluetun
     ports:
       - "8888:8888"   # qB WebUI (derrière VPN)
       - "9696:9696"    # Prowlarr (derrière VPN)
-      - "3000:3000"     # Firefox http sandbox (derrière VPN)
-      - "3001:3001"     # Firefox https sandbox (derrière VPN)
-      - "8082:8082"     # Firefox websocket sandbox (derrière VPN)
+      - "8889:8889"   # proxy HTTP Gluetun
+    # - "3000:3000"     # Firefox http sandbox (derrière VPN)
+    # - "3001:3001"     # Firefox https sandbox (derrière VPN)
+    # - "8082:8082"     # Firefox websocket sandbox (derrière VPN)
 
     restart: unless-stopped
 
@@ -57,7 +65,7 @@ services:
   firefox_sandbox:
     image: lscr.io/linuxserver/firefox:latest
     container_name: firefox-sandbox
-    network_mode: "service:gluetun"
+  # network_mode: "service:gluetun"
     shm_size: "1gb"
     env_file: 
       - /etc/portainer-env/dl-automation.env    
@@ -77,7 +85,11 @@ services:
     volumes:
       - /docker/firefox:/config
       - /srv/downloads/qbittorrent:/data
-    depends_on: [ gluetun ]
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+      - "8082:8082"      
+  # depends_on: [ gluetun ]
     restart: unless-stopped
 
   # ARR hors VPN (mais DNS Pi-hole), accès aux médias RO/RW
