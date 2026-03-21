@@ -67,6 +67,8 @@ services:
     container_name: firefox-sandbox
     network_mode: "service:gluetun"
     shm_size: "1gb"
+    security_opt:
+      - seccomp=unconfined
     env_file: 
       - /etc/portainer-env/dl-automation.env    
     environment:
@@ -81,15 +83,14 @@ services:
       - NO_DECOR=1
       - CUSTOM_PORT=3000
       - CUSTOM_HTTPS_PORT=3001
-      - CUSTOM_WS_PORT=8082
-      - HTTP_PROXY=http://localhost:8889 # Set the HTTP proxy to Gluetun
-      - HTTPS_PROXY=http://localhost:8889 # Set the HTTPS proxy to Gluetun
+#     - HTTP_PROXY=http://localhost:8889 # Set the HTTP proxy to Gluetun
+#     - HTTPS_PROXY=http://localhost:8889 # Set the HTTPS proxy to Gluetun
     volumes:
       - /docker/firefox:/config
       - /srv/downloads/qbittorrent:/data
-#   ports:
-#     - "3000:3000"
-#     - "3001:3001"
+    ports:
+      - "3000:3000"
+      - "3001:3001"
 #     - "8082:8082"      
     depends_on: [ gluetun ]
     restart: unless-stopped
