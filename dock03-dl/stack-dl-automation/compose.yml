@@ -11,6 +11,7 @@ services:
       VPN_PORT_FORWARDING_UP_COMMAND: /gluetun/update_qbt_port.sh {{PORT}} {{VPN_INTERFACE}}
       VPN_PORT_FORWARDING_DOWN_COMMAND: /gluetun/reset_qbt_port.sh
       IPV6: "off"
+      DNS_UPSTREAM_PLAIN_ADDRESSES: 172.16.90.1:53,172.16.70.1:53
       # Proxy HTTP Gluetun
       HTTPPROXY: "on"
       HTTPPROXY_LISTENING_ADDRESS: ":8889"
@@ -75,8 +76,8 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Paris
-  #   - CUSTOM_USER=abc
-  #   - PASSWORD=abc
+      - CUSTOM_USER="${CUSTOM_USER}"
+      - PASSWORD="${PASSWORD}"
       - SUBFOLDER=/
       - TITLE=Firefox
       - DISABLE_IPV6=true
