@@ -3,6 +3,7 @@ services:
     image: qmcgaw/gluetun:v3.41.1
     container_name: gluetun
     cap_add: [ "NET_ADMIN" ]
+    dns: 172.16.90.1
     devices:
       - /dev/net/tun:/dev/net/tun
     env_file: 
@@ -11,8 +12,9 @@ services:
       VPN_PORT_FORWARDING_UP_COMMAND: /gluetun/update_qbt_port.sh {{PORT}} {{VPN_INTERFACE}}
       VPN_PORT_FORWARDING_DOWN_COMMAND: /gluetun/reset_qbt_port.sh
       IPV6: "off"
+      DNS_KEEP_NAMESERVER: "on"
       DNS_UPSTREAM_RESOLVER_TYPE: plain
-      DNS_UPSTREAM_PLAIN_ADDRESSES: 172.16.90.1:53
+#     DNS_UPSTREAM_PLAIN_ADDRESSES: 172.16.90.1:53
       FIREWALL_OUTBOUND_SUBNETS: 172.16.0.0/12
       # Proxy HTTP Gluetun
       HTTPPROXY: "on"
@@ -20,7 +22,6 @@ services:
       # optionnel si tu veux une auth proxy :
       # HTTPPROXY_USER: "proxyuser"
       # HTTPPROXY_PASSWORD: "proxypass"
-
     volumes:
       - /docker/gluetun:/gluetun
     ports:
