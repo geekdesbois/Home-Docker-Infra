@@ -67,8 +67,8 @@ services:
     container_name: firefox-sandbox
     network_mode: "service:gluetun"
     shm_size: "1gb"
-    security_opt:
-      - seccomp=unconfined
+#   security_opt:
+#     - seccomp=unconfined
     env_file: 
       - /etc/portainer-env/dl-automation.env    
     environment:
