@@ -76,8 +76,8 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Paris
-      - CUSTOM_USER="${CUSTOM_USER}"
-      - PASSWORD="${PASSWORD}"
+    # - CUSTOM_USER="${CUSTOM_USER}"
+    # - PASSWORD="${PASSWORD}"
       - SUBFOLDER=/
       - TITLE=Firefox
       - DISABLE_IPV6=true
