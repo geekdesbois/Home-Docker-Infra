@@ -79,8 +79,8 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Paris
-      - CUSTOM_USER="geekdesbois"
-      - PASSWORD="NeoRaffxp81age"
+      - CUSTOM_USER=geekdesbois
+      - PASSWORD=NeoRaffxp81%age
       - SUBFOLDER=/
       - TITLE=Firefox
       - DISABLE_IPV6=true
