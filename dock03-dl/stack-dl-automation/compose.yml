@@ -80,7 +80,7 @@ services:
       - PGID=1000
       - TZ=Europe/Paris
       - CUSTOM_USER="geekdesbois"
-      - PASSWORD="NeoRaffxp81%age"
+      - PASSWORD="NeoRaffxp81age"
       - SUBFOLDER=/
       - TITLE=Firefox
       - DISABLE_IPV6=true
