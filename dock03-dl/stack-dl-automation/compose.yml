@@ -31,7 +31,11 @@ services:
       - "3000:3000"     # Firefox http sandbox (derrière VPN)
       - "3001:3001"     # Firefox https sandbox (derrière VPN)
     # - "8082:8082"     # Firefox websocket sandbox (derrière VPN)
-
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:9999/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
     restart: unless-stopped
 
   qbittorrent:
@@ -47,6 +51,11 @@ services:
       - /docker/qbittorrent:/config
       - /srv/downloads/qbittorrent:/data
     depends_on: [ gluetun ]
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8888/api/v2/app/preferences | grep -q '\"listen_port\":[1-9]'"]
+      interval: 30s
+      timeout: 5s
+      retries: 3    
     restart: unless-stopped
 
   prowlarr:
