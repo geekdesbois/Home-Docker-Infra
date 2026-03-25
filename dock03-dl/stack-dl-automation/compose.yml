@@ -7,7 +7,7 @@ services:
     devices:
       - /dev/net/tun:/dev/net/tun
     env_file: 
-      - /etc/portainer-env/dl-automation.env
+      - /etc/portainer-env/dl-automation-gluetun.env
     environment:
       VPN_PORT_FORWARDING_UP_COMMAND: /gluetun/update_qbt_port.sh {{PORT}} {{VPN_INTERFACE}}
       VPN_PORT_FORWARDING_DOWN_COMMAND: /gluetun/reset_qbt_port.sh
@@ -38,8 +38,6 @@ services:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
     network_mode: "service:gluetun"
-    env_file: 
-      - /etc/portainer-env/dl-automation.env    
     environment:
       - PUID=1000
       - PGID=1000
@@ -55,8 +53,6 @@ services:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
     network_mode: "service:gluetun"
-    env_file: 
-      - /etc/portainer-env/dl-automation.env    
     environment:
       - PUID=1000
       - PGID=1000
@@ -74,13 +70,11 @@ services:
 #   security_opt:
 #     - seccomp=unconfined
     env_file: 
-      - /etc/portainer-env/dl-automation.env    
+      - /etc/portainer-env/dl-automation-firefox.env    
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Paris
-      - CUSTOM_USER="${CUSTOM_USER}"
-      - PASSWORD="${PASSWORD}"
       - SUBFOLDER=/
       - TITLE=Firefox
       - DISABLE_IPV6=true
@@ -103,9 +97,6 @@ services:
   radarr:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
-    env_file: 
-      - /etc/portainer-env/dl-automation.env    
-    dns: [ "${DNS_PIHOLE}" ]
     environment:
       - PUID=1000
       - PGID=1000
@@ -122,9 +113,6 @@ services:
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
-    env_file: 
-      - /etc/portainer-env/dl-automation.env    
-    dns: [ "${DNS_PIHOLE}" ]
     environment:
       - PUID=1000
       - PGID=1000
@@ -141,9 +129,6 @@ services:
   lidarr:
     image: lscr.io/linuxserver/lidarr:latest
     container_name: lidarr
-    env_file: 
-      - /etc/portainer-env/dl-automation.env    
-    dns: [ "${DNS_PIHOLE}" ]
     environment:
       - PUID=1000
       - PGID=1000
@@ -160,9 +145,6 @@ services:
 # readarr:
 #   image: lscr.io/linuxserver/readarr:develop
 #   container_name: readarr
-#   env_file: 
-#     - /etc/portainer-env/dl-automation.env    
-#   dns: [ "${DNS_PIHOLE}" ]
 #   environment:
 #     - PUID=1000
 #     - PGID=1000
@@ -180,9 +162,6 @@ services:
   clamav:
     image: clamav/clamav:stable
     container_name: clamav
-    env_file: 
-      - /etc/portainer-env/dl-automation.env    
-    dns: [ "${DNS_PIHOLE}" ]
     environment:
       - TZ=Europe/Paris
     volumes:
