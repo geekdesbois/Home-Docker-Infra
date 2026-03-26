@@ -2,13 +2,16 @@ services:
   samba:
     image: dperson/samba
     container_name: samba
-    env_file: 
-        - /etc/portainer-env/dl-samba.env  
+    env_file:
+      - /etc/portainer-env/dl-samba.env
     ports:
       - "445:445"
     volumes:
       - /srv/downloads/qbittorrent/downloads:/downloads
+    entrypoint: ["/bin/sh", "-c"]
     command: >
-      -u "${SAMBA_USER};${SAMBA_PASS}"
-      -s "downloads;/downloads;yes;no;no;${SAMBA_USER}"
+      exec /usr/bin/samba.sh
+      -p
+      -u "$$SAMBA_USER;$$SAMBA_PASS"
+      -s "downloads;/downloads;yes;no;no;$$SAMBA_USER"
     restart: unless-stopped
