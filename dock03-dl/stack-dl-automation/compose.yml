@@ -113,7 +113,7 @@ services:
     volumes:
       - /docker/radarr:/config
       - /srv/downloads/qbittorrent:/data
-      - /mnt/media-gold:/media-gold:ro
+      - /mnt/media-gold:/media-gold:rw
       - /mnt/media-upgrade:/media:rw
     ports:
       - "7878:7878"
