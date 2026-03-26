@@ -9,4 +9,8 @@ services:
     command: >
       -u "${SAMBA_USER};${SAMBA_PASS}"
       -s "downloads;/downloads;yes;no;no;${SAMBA_USER}"
+      -g "force user = geekdesbois"
+      -g "force group = users"
+      -g "create mask = 0664"
+      -g "directory mask = 0775"
     restart: unless-stopped
