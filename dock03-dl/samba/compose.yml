@@ -6,6 +6,7 @@ services:
       - "445:445"
     volumes:
       - /srv/downloads/qbittorrent/downloads:/downloads
+    # cred user in env in Portainer  
     command: >
       -u "${SAMBA_USER};${SAMBA_PASS}"
       -s "downloads;/downloads;yes;no;no;${SAMBA_USER}"
@@ -13,4 +14,5 @@ services:
       -g "force group = users"
       -g "create mask = 0664"
       -g "directory mask = 0775"
+      -g "vfs objects ="
     restart: unless-stopped
