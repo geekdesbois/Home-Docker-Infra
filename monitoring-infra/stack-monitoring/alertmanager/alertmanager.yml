@@ -1,6 +1,6 @@
 global:
   smtp_smarthost: "blackbox.zonelibre.live:25"
-  smtp_from: "monitoring@terre-du-mileu.org"
+  smtp_from: "monitoring@terre-du-milieu.org"
   smtp_require_tls: false
   resolve_timeout: 5m
 
