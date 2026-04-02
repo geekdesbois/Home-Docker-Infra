@@ -19,6 +19,8 @@ decisions:
   - type: ban
     duration: 12h
 duration_expr: Sprintf('%dh', (GetDecisionsCount(Alert.GetValue()) + 1) * 12)
+notifications:
+  - email_default
 on_success: break
 
 ---
@@ -28,4 +30,6 @@ filters:
 decisions:
   - type: ban
     duration: 24h
+notifications:
+  - email_default    
 on_success: break
