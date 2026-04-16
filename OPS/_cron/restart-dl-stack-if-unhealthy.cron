@@ -1,1 +1,1 @@
-*/5 * * * * /usr/local/sbin/restart-dl-stack-if-unhealthy.sh >> /var/log/restart-dl-stack-if-unhealthy.log 2>&1
+*/15 * * * * /usr/local/sbin/restart-dl-stack-if-unhealthy.sh >> /var/log/restart-dl-stack-if-unhealthy.log 2>&1
