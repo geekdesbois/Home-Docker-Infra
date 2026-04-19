@@ -22,6 +22,13 @@ services:
       # optionnel si tu veux une auth proxy :
       # HTTPPROXY_USER: "proxyuser"
       # HTTPPROXY_PASSWORD: "proxypass"
+      # Health / stabilité
+      HEALTH_RESTART_VPN: "on"
+      HEALTH_TARGET_ADDRESSES: "cloudflare.com:443,google.com:443,github.com:443"
+      HEALTH_ICMP_TARGET_IPS: "1.1.1.1,8.8.8.8"
+      # Option utile si problèmes WG
+      # WIREGUARD_MTU: "1320"
+
     volumes:
       - /docker/gluetun:/gluetun
     ports:
