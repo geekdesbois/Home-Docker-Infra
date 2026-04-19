@@ -7,8 +7,8 @@ services:
     devices:
       - /dev/net/tun:/dev/net/tun
     env_file: 
-      - /etc/portainer-env/dl-automation-gluetun-OVPN.env
-    # - /etc/portainer-env/dl-automation-gluetun-WG.env
+    # - /etc/portainer-env/dl-automation-gluetun-OVPN.env
+      - /etc/portainer-env/dl-automation-gluetun-WG.env
     environment:
       VPN_PORT_FORWARDING_UP_COMMAND: /gluetun/update_qbt_port.sh {{PORT}} {{VPN_INTERFACE}}
       VPN_PORT_FORWARDING_DOWN_COMMAND: /gluetun/reset_qbt_port.sh
