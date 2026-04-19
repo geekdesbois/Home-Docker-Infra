@@ -28,7 +28,7 @@ services:
       HEALTH_TARGET_ADDRESSES: "cloudflare.com:443,google.com:443,github.com:443"
       HEALTH_ICMP_TARGET_IPS: "1.1.1.1,8.8.8.8"
       # Option utile si problèmes WG
-      # WIREGUARD_MTU: "1320"
+      WIREGUARD_MTU: "1320"
 
     volumes:
       - /docker/gluetun:/gluetun
