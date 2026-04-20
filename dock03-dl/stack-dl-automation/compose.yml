@@ -88,7 +88,7 @@ services:
       - /srv/downloads/qbittorrent/downloads:/data
     environment:
       - TZ=Europe/Paris
-    command: search  
+    command: ["search"]
     restart: "no"
 
   firefox_sandbox:
