@@ -30,7 +30,12 @@ module.exports = {
   maxRequests: 3,
 
   // délai entre scans
-  delay: 30,
+  delay: 60,
+
+  includeSingleEpisodes: false,
+  includeNonVideos: false,
+  flatLinking: false,
+  skipRecheck: false,
 
   // logs
   logLevel: "info"
