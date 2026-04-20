@@ -79,6 +79,17 @@ services:
     depends_on: [ gluetun ]
     restart: unless-stopped
 
+  cross-seed:
+    image: ghcr.io/cross-seed/cross-seed:latest
+    container_name: cross-seed
+    network_mode: "service:gluetun"
+    volumes:
+      - /docker/cross-seed:/config
+      - /srv/downloads/qbittorrent/downloads:/data
+    environment:
+      - TZ=Europe/Paris
+    restart: unless-stopped
+
   firefox_sandbox:
     image: lscr.io/linuxserver/firefox:latest
     container_name: firefox-sandbox
