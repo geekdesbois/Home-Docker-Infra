@@ -88,7 +88,7 @@ services:
       - /srv/downloads/qbittorrent/downloads:/data
     environment:
       - TZ=Europe/Paris
-    restart: unless-stopped
+    restart: "no"
 
   firefox_sandbox:
     image: lscr.io/linuxserver/firefox:latest

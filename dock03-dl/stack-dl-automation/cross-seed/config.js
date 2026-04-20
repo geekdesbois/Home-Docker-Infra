@@ -6,10 +6,10 @@ module.exports = {
 
   // Prowlarr (l'api key est celle de prowlarr, pas des trackers)
   torznab: [
-    "http://127.0.0.1:9696/1/api?apikey=XXX"
-    "http://127.0.0.1:9696/15/api?apikey=XXX"
-    "http://127.0.0.1:9696/14/api?apikey=XXX"
-    "http://127.0.0.1:9696/2/api?apikey=XXX"
+    "http://127.0.0.1:9696/1/api?apikey=XXX",
+    "http://127.0.0.1:9696/15/api?apikey=XXX",
+    "http://127.0.0.1:9696/14/api?apikey=XXX",
+    "http://127.0.0.1:9696/2/api?apikey=XXX",
 ],
 
   // Dossiers
@@ -32,8 +32,6 @@ module.exports = {
   // délai entre scans
   delay: 60,
 
-  includeSingleEpisodes: false,
-  includeNonVideos: false,
   flatLinking: false,
   skipRecheck: false,
 
