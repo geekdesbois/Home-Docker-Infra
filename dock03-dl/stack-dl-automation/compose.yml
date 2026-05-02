@@ -87,6 +87,7 @@ services:
       - /docker/cross-seed:/config
       - /srv/downloads/qbittorrent:/data
       - /docker/qbittorrent:/qbt-config:ro
+    depends_on: [ gluetun ]      
     environment:
       - TZ=Europe/Paris
     command: ["daemon"]
