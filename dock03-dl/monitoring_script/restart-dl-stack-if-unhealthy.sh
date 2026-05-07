@@ -6,6 +6,7 @@ QBT_CONTAINER="qbittorrent"
 GLUETUN_CONTAINER="gluetun"
 FIREFOX_CONTAINER="firefox-sandbox"
 PROWLARR_CONTAINER="prowlarr"
+CROSS_SEED_CONTAINER="cross-seed"
 
 LOG_TAG="dl-autoheal"
 
@@ -47,6 +48,7 @@ case "$STATE" in
     restart_container "$QBT_CONTAINER"
     restart_container "$FIREFOX_CONTAINER"
     restart_container "$PROWLARR_CONTAINER"
+    restart_container "$CROSS_SEED_CONTAINER"
 
     NEW_STATE="$(get_health "$QBT_CONTAINER")"
     log "post-restart health status for $QBT_CONTAINER: $NEW_STATE"

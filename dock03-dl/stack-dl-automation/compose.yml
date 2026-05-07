@@ -78,6 +78,7 @@ services:
       - /docker/prowlarr:/config
     depends_on: [ gluetun ]
     restart: unless-stopped
+    
   cross-seed:
     image: ghcr.io/cross-seed/cross-seed:latest
     container_name: cross-seed
