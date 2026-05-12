@@ -47,7 +47,7 @@ services:
     restart: unless-stopped
 
   qbittorrent:
-    image: lscr.io/linuxserver/qbittorrent:latest
+    image: lscr.io/linuxserver/qbittorrent:v5.1.4
     container_name: qbittorrent
     network_mode: "service:gluetun"
     environment:
@@ -80,7 +80,7 @@ services:
     restart: unless-stopped
     
   cross-seed:
-    image: ghcr.io/cross-seed/cross-seed:latest
+    image: ghcr.io/cross-seed/cross-seed:v6.13.6
     container_name: cross-seed
     network_mode: "service:gluetun"
     user: "1000:1000"
