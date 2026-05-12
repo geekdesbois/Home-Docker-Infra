@@ -80,7 +80,7 @@ services:
     restart: unless-stopped
     
   cross-seed:
-    image: ghcr.io/cross-seed/cross-seed:v6.13.7
+    image: ghcr.io/cross-seed/cross-seed:latest
     container_name: cross-seed
     network_mode: "service:gluetun"
     user: "1000:1000"
