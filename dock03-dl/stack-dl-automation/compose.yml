@@ -90,7 +90,8 @@ services:
       - /docker/qbittorrent:/qbt-config:ro
     depends_on:
       - gluetun
-      - qbittorrent    
+      - qbittorrent
+      - prowlarr
     environment:
       - TZ=Europe/Paris
     command: ["daemon"]
