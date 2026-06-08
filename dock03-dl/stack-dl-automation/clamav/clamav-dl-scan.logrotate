@@ -1,0 +1,32 @@
+# /etc/logrotate.d/clamav-dl-scan
+# Rotation des logs ClamAV pour la stack torrent
+
+/var/log/clamav-dl-scan.log
+/var/log/clamav-inotify.log
+{
+    # Rotation hebdomadaire
+    weekly
+
+    # Conserve 12 semaines (~3 mois)
+    rotate 12
+
+    # Compresse les anciens logs
+    compress
+    delaycompress
+
+    # Pas d'erreur si le fichier est absent (ex: premier run)
+    missingok
+
+    # Ne tourne pas si le fichier est vide
+    notifempty
+
+    # Crée un nouveau fichier avec les bons droits
+    create 0640 root adm
+
+    # Date dans le nom du fichier rotaté (plus lisible que les suffixes .1 .2)
+    dateext
+    dateformat -%Y%m%d
+
+    # Pas besoin de signal post-rotation : le script réouvre le fichier à chaque write
+    # (tee -a ouvre/ferme à chaque appel)
+}
