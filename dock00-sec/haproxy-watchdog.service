@@ -1,0 +1,8 @@
+[Unit]
+Description=Watchdog haproxy — redémarre le conteneur si arrêté
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/haproxy-watchdog.sh
