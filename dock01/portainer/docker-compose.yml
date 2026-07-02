@@ -11,5 +11,3 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /docker/portainer/data:/data
       - /etc/portainer-env:/etc/portainer-env:ro
-volumes:
-  portainer_data:
