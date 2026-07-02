@@ -3,7 +3,7 @@ set -euo pipefail
 
 DEST="/docker/portainer/backup"
 TS="$(date +%F_%H-%M-%S)"
-VOLUME="portainer_portainer_data"
+VOLUME="/docker/portainer/data"
 
 mkdir -p "$DEST"
 
