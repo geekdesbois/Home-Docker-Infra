@@ -9,7 +9,7 @@ services:
       - "9443:9443"   # UI HTTPS
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
+      - /docker/portainer/data:/data
       - /etc/portainer-env:/etc/portainer-env:ro
 volumes:
   portainer_data:
