@@ -116,6 +116,8 @@ services:
       - NO_DECOR=1
       - CUSTOM_PORT=3000
       - CUSTOM_HTTPS_PORT=3001
+      - SELKIES_AUDIO_ENABLED=false|locked
+      - SELKIES_MICROPHONE_ENABLED=false|locked    
 #     - HTTP_PROXY=http://localhost:8889 # Set the HTTP proxy to Gluetun
 #     - HTTPS_PROXY=http://localhost:8889 # Set the HTTPS proxy to Gluetun
     volumes:
