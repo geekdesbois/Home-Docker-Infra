@@ -2,13 +2,11 @@ services:
   convertx:
     image: ghcr.io/c4illin/convertx:latest
     container_name: convertx
-    env_file:
-      - /etc/portainer-env/convertx.env      # adapte au nom réel de ton env host
     restart: unless-stopped
     environment:
       - TZ= Europe/Paris
-      - JWT_SECRET=${CONVERTX_JWT_SECRET}
-      - ACCOUNT_REGISTRATION=false         # true 5 min pour créer ton compte, puis false
+      - JWT_SECRET=${CONVERTX_JWT_SECRET}          # variable défitnie directement dans Portainer (Settings > Environment Variables)
+      - ACCOUNT_REGISTRATION=true         # true 5 min pour créer ton compte, puis false
       - ALLOW_UNAUTHENTICATED=false
       - HTTP_ALLOWED=false                 # TLS terminé par HAProxy -> cookies Secure OK
       - AUTO_DELETE_EVERY_N_HOURS=6
