@@ -18,6 +18,8 @@ services:
       TZ: Europe/Paris
       FTLCONF_dns_listeningMode: "all"
 
+    shm_size: "256mb"  
+
     volumes:
       - /docker/pihole/etc-pihole:/etc/pihole
       - /docker/pihole/etc-dnsmasq.d:/etc/dnsmasq.d
