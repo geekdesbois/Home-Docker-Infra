@@ -117,9 +117,17 @@ services:
       - CUSTOM_PORT=3000
       - CUSTOM_HTTPS_PORT=3001
       - SELKIES_AUDIO_ENABLED=false|locked
-      - SELKIES_MICROPHONE_ENABLED=false|locked    
+      - SELKIES_MICROPHONE_ENABLED=false|locked
+      - SELKIES_MANUAL_WIDTH=2432
+      - SELKIES_MANUAL_HEIGHT=1152
+      - SELKIES_IS_MANUAL_RESOLUTION_MODE=true          
 #     - HTTP_PROXY=http://localhost:8889 # Set the HTTP proxy to Gluetun
 #     - HTTPS_PROXY=http://localhost:8889 # Set the HTTPS proxy to Gluetun
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     volumes:
       - /docker/firefox:/config
       - /srv/downloads/qbittorrent:/data
