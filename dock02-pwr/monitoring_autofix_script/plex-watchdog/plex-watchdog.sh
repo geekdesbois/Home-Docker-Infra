@@ -2,6 +2,7 @@
 # plex-watchdog.sh — surveille le conteneur Plex :
 #   - le démarre s'il est arrêté (après vérification des montages SMB et du GPU)
 #   - le redémarre s'il tourne mais ne voit pas les montages SMB (monté avant eux)
+#   - le redémarre s'il tourne sans GPU (spec CDI absente au moment du démarrage)
 # Lancé par plex-watchdog.timer (systemd). Peut aussi être lancé à la main.
 #
 # Codes retour : 0 = OK / rien à faire / corrigé, 1 = problème (voir journal)
@@ -25,8 +26,14 @@ MOUNT_MAP=(
 # Redémarrer Plex s'il tourne mais voit un dossier local vide à la place du partage SMB
 RESTART_ON_STALE_MOUNT=1
 
-# Périphériques NVIDIA déclarés dans le compose (laisser vide pour ne pas vérifier)
-NVIDIA_DEVICES=(/dev/nvidia0 /dev/nvidiactl /dev/nvidia-modeset /dev/nvidia-uvm /dev/nvidia-uvm-tools)
+# Périphériques NVIDIA nécessaires au transcodage (laisser vide pour ne pas vérifier)
+NVIDIA_DEVICES=(/dev/nvidia0 /dev/nvidiactl /dev/nvidia-uvm)
+
+# Spécification CDI utilisée par Docker pour "gpus: all" (tmpfs, recréée au boot)
+CDI_SPEC=/var/run/cdi/nvidia.yaml
+
+# Redémarrer Plex s'il tourne sans voir le GPU (nvidia-smi échoue dans le conteneur)
+CHECK_GPU=1
 
 # Secondes d'attente après start/restart avant de vérifier que le conteneur tient
 SETTLE_DELAY=15
@@ -102,6 +109,43 @@ check_running_mounts() {
     return 1
 }
 
+# Génère la spec CDI si elle manque (sinon Docker démarre Plex sans GPU, sans erreur)
+ensure_cdi_spec() {
+    [[ -s "$CDI_SPEC" ]] && return 0
+    command -v nvidia-ctk >/dev/null 2>&1 || return 0
+    warn "Spécification CDI absente ($CDI_SPEC), génération."
+    if ! nvidia-ctk cdi generate --output="$CDI_SPEC" >/dev/null 2>&1; then
+        err "Échec de la génération de $CDI_SPEC."
+        return 1
+    fi
+}
+
+# Conteneur en marche : vérifie qu'il voit le GPU
+check_running_gpu() {
+    (( CHECK_GPU )) || return 0
+    timeout 20 docker exec "$CONTAINER" nvidia-smi -L >/dev/null 2>&1 && return 0
+
+    # GPU indisponible aussi sur l'hôte : redémarrer Plex ne servirait à rien
+    if ! timeout 20 nvidia-smi -L >/dev/null 2>&1; then
+        err "GPU indisponible sur l'hôte (nvidia-smi échoue) : driver à vérifier."
+        return 1
+    fi
+
+    warn "'$CONTAINER' tourne sans GPU (nvidia-smi échoue dans le conteneur) — redémarrage."
+    ensure_cdi_spec || return 1
+    if ! out=$(docker restart "$CONTAINER" 2>&1); then
+        err "Échec de 'docker restart $CONTAINER' : $out"
+        return 1
+    fi
+    verify_running "redémarré" || return 1
+    if timeout 20 docker exec "$CONTAINER" nvidia-smi -L >/dev/null 2>&1; then
+        info "GPU de nouveau visible dans '$CONTAINER'."
+        return 0
+    fi
+    err "GPU toujours invisible dans '$CONTAINER' après redémarrage (voir 'journalctl -u docker -b | grep -i cdi')."
+    return 1
+}
+
 # Évite deux exécutions simultanées
 exec 9>"$LOCK_FILE"
 flock -n 9 || { info "Une autre instance tourne déjà, sortie."; exit 0; }
@@ -125,8 +169,10 @@ status=$(ctr_status)
 
 case "$status" in
     running)
-        check_running_mounts
-        exit $?
+        rc=0
+        check_running_mounts || rc=1
+        check_running_gpu    || rc=1
+        exit $rc
         ;;
     restarting)
         info "'$CONTAINER' est en cours de redémarrage par Docker, on laisse faire."
@@ -177,6 +223,8 @@ if (( ${#missing[@]} > 0 )); then
     fi
     info "Périphériques NVIDIA créés."
 fi
+
+ensure_cdi_spec || exit 1
 
 if ! out=$(docker start "$CONTAINER" 2>&1); then
     err "Échec de 'docker start $CONTAINER' : $out"
