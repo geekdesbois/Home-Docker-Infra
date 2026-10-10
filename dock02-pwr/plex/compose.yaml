@@ -30,10 +30,11 @@ services:
     volumes:
       - /srv/plex/config:/config
       - /srv/plex/transcode:/transcode
-      - /mnt/media/videoblackbox:/media/videoblackbox
-      - /mnt/media/videopriveblackbox:/media/videopriveblackbox
-      - /mnt/media/musicblackbox:/media/musicblackbox
-      - /mnt/media/ebooksblackbox:/media/ebooksblackbox
+      - /mnt/media:/media:rslave    
+#     - /mnt/media/videoblackbox:/media/videoblackbox
+#     - /mnt/media/videopriveblackbox:/media/videopriveblackbox
+#     - /mnt/media/musicblackbox:/media/musicblackbox
+#     - /mnt/media/ebooksblackbox:/media/ebooksblackbox
 
 #   ports:
 #     - 32400:32400/tcp

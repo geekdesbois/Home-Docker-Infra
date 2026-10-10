@@ -1,0 +1,7 @@
+[Unit]
+Description=Watchdog du conteneur Docker Plex
+After=docker.service network-online.target remote-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/plex-watchdog.sh

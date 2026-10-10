@@ -1,0 +1,7 @@
+[Unit]
+Description=Vidage protégé de la corbeille Plex
+After=docker.service network-online.target remote-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/plex-empty-trash.sh

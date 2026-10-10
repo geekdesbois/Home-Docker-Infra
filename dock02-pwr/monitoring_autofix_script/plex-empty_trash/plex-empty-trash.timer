@@ -1,0 +1,12 @@
+[Unit]
+Description=Vidage hebdomadaire protégé de la corbeille Plex
+
+[Timer]
+# Dimanche matin, avant la fin de la fenêtre de maintenance Plex (nettoyage des bundles)
+OnCalendar=Sun *-*-* 03:30:00
+RandomizedDelaySec=10min
+# Rattrape le passage manqué si l'hôte était éteint
+Persistent=true
+
+[Install]
+WantedBy=timers.target

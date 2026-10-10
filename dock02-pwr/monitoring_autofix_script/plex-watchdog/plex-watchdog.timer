@@ -1,0 +1,12 @@
+[Unit]
+Description=Vérifie le conteneur Plex toutes les 15 minutes
+
+[Timer]
+# Premier passage 5 min après le boot (laisse le temps à Docker, aux montages et au driver NVIDIA)
+OnBootSec=5min
+OnUnitActiveSec=15min
+RandomizedDelaySec=30
+AccuracySec=1min
+
+[Install]
+WantedBy=timers.target
