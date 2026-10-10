@@ -20,12 +20,12 @@ services:
       PLEX_GID: ${PLEX_GID:-1000}
       # PLEX_CLAIM: ${PLEX_CLAIM:-}
 
-    devices:
-      - /dev/nvidia0
-      - /dev/nvidiactl
-      - /dev/nvidia-modeset
-      - /dev/nvidia-uvm
-      - /dev/nvidia-uvm-tools
+#   devices:
+#     - /dev/nvidia0
+#     - /dev/nvidiactl
+#     - /dev/nvidia-modeset
+#     - /dev/nvidia-uvm
+#     - /dev/nvidia-uvm-tools
 
     volumes:
       - /srv/plex/config:/config
