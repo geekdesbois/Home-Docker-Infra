@@ -105,3 +105,17 @@ Voir :
 ```
 
 Jamais commit dans Git.
+
+## Fine Tuning service Docker pour attendre points de montage des medias via le réseau et le gpu Nvidia
+sudo systemctl edit docker.service
+
+ajouter en haut du fichier:
+
+[Unit]
+WantsMountsFor=/mnt/media/videoblackbox /mnt/media/videopriveblackbox /mnt/media/musicblackbox /mnt/media/ebooksblackbox
+
+[Service]
+# Crée les fichiers /dev/nvidia* avant que Docker ne relance les conteneurs
+ExecStartPre=-/usr/bin/nvidia-modprobe -u -c 0
+ExecStartPre=-/usr/bin/nvidia-modprobe -m
+ExecStartPre=-/usr/bin/nvidia-ctk cdi generate --output=/var/run/cdi/nvidia.yaml
