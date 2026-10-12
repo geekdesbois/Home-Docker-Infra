@@ -30,7 +30,7 @@ MOUNT_MAP=(
 
 # Au-delà de ce nombre d'éléments en corbeille dans une bibliothèque, on ne vide pas
 # (0 = pas de limite). À ajuster selon ton rythme de ménage.
-MAX_TRASH="${MAX_TRASH:-100}"
+MAX_TRASH="${MAX_TRASH:-300}"
 
 DRY_RUN="${DRY_RUN:-0}"
 
