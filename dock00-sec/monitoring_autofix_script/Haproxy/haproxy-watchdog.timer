@@ -1,0 +1,10 @@
+[Unit]
+Description=Lance le watchdog HAProxy toutes les 2 minutes
+
+[Timer]
+OnBootSec=3min
+OnUnitInactiveSec=2min
+AccuracySec=15s
+
+[Install]
+WantedBy=timers.target
