@@ -18,7 +18,7 @@ services:
     container_name: haproxy
     env_file:
       - /etc/portainer-env/dmzsec.env
-    restart: unless-stopped
+    restart: always
     depends_on: [syslog]
     networks:
       dmzsec:
