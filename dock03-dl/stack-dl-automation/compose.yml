@@ -87,7 +87,7 @@ services:
     volumes:
       - /docker/cross-seed:/config
       - /srv/downloads/qbittorrent:/data
-      - /docker/qbittorrent:/qbt-config:ro
+#     - /docker/qbittorrent:/qbt-config:ro
     depends_on:
       - gluetun
       - qbittorrent
