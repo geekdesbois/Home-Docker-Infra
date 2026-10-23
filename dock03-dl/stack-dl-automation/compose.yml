@@ -39,7 +39,7 @@ services:
       - "8889:8889"   # proxy HTTP Gluetun
       - "3000:3000"     # Firefox http sandbox (derrière VPN)
       - "3001:3001"     # Firefox https sandbox (derrière VPN)
-      - "127.0.0.1:8000:8000"   # control server, local uniquement + clé API
+      - "127.0.0.1:8010:8000"   # control server, local uniquement + clé API
     # - "8082:8082"     # Firefox websocket sandbox (derrière VPN)
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:9999/ >/dev/null || exit 1"]
