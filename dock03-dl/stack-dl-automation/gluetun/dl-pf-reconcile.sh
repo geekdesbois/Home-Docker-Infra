@@ -14,7 +14,7 @@ QBT="qbittorrent"
 DEPENDENTS=(qbittorrent prowlarr cross-seed firefox-sandbox)
 
 PF_FILE="/docker/gluetun/forwarded_port"     # = VPN_PORT_FORWARDING_STATUS_FILE=/gluetun/forwarded_port
-CTRL_URL="http://127.0.0.1:8000"             # control server gluetun publié en 127.0.0.1 uniquement
+CTRL_URL="http://127.0.0.1:8010"             # control server gluetun publié en 127.0.0.1 uniquement
 API_KEY_FILE="/etc/dl-reconcile/gluetun.apikey"
 QBT_URL="http://127.0.0.1:8888"
 VPN_IFACE="tun0"                             # interface gluetun (tun0 par défaut, OpenVPN comme WireGuard)

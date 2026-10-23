@@ -24,7 +24,7 @@ fi
 echo "[qbt-pf] applying port/interface"
 
 POST_OUTPUT="$(
-  wget -S -O- \
+  wget -nv -O- \
     --header="Referer: http://127.0.0.1:8888" \
     --header="Origin: http://127.0.0.1:8888" \
     --post-data="json={\"listen_port\":${PORT},\"current_network_interface\":\"${IFACE}\",\"random_port\":false,\"upnp\":false}" \
