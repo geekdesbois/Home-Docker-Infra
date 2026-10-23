@@ -1,6 +1,6 @@
 services:
   gluetun:
-    image: qmcgaw/gluetun:v3.41.1
+    image: qmcgaw/gluetun:v3.41.3
     container_name: gluetun
     cap_add: [ "NET_ADMIN" ]
     dns: 172.16.90.1
@@ -11,7 +11,8 @@ services:
       - /etc/portainer-env/dl-automation-gluetun-WG.env
     environment:
       VPN_PORT_FORWARDING_UP_COMMAND: /gluetun/update_qbt_port.sh {{PORT}} {{VPN_INTERFACE}}
-      VPN_PORT_FORWARDING_DOWN_COMMAND: /gluetun/reset_qbt_port.sh
+#     VPN_PORT_FORWARDING_DOWN_COMMAND: /gluetun/reset_qbt_port.sh
+      VPN_PORT_FORWARDING_STATUS_FILE: /gluetun/forwarded_port   # lisible depuis l'hôte
       IPV6: "off"
       DNS_KEEP_NAMESERVER: "on"
       DNS_UPSTREAM_RESOLVER_TYPE: plain
@@ -38,6 +39,7 @@ services:
       - "8889:8889"   # proxy HTTP Gluetun
       - "3000:3000"     # Firefox http sandbox (derrière VPN)
       - "3001:3001"     # Firefox https sandbox (derrière VPN)
+      - "127.0.0.1:8000:8000"   # control server, local uniquement + clé API
     # - "8082:8082"     # Firefox websocket sandbox (derrière VPN)
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:9999/ >/dev/null || exit 1"]

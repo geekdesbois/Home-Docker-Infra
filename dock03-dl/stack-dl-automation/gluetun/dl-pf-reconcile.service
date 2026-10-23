@@ -1,0 +1,9 @@
+# /etc/systemd/system/dl-pf-reconcile.service
+[Unit]
+Description=Réconciliation port forwarding gluetun -> qBittorrent
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/dl-pf-reconcile.sh

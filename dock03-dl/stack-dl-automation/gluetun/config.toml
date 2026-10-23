@@ -1,0 +1,9 @@
+# /docker/gluetun/auth/config.toml  (vu par gluetun comme /gluetun/auth/config.toml)
+# Clé à générer avec : docker run --rm qmcgaw/gluetun:v3.41.3 genkey
+# La même clé va dans /etc/dl-reconcile/gluetun.apikey (chmod 600) côté hôte.
+
+[[roles]]
+name = "dl-reconcile"
+routes = ["GET /v1/vpn/status", "PUT /v1/vpn/status", "GET /v1/portforward"]
+auth = "apikey"
+apikey = "REMPLACER_PAR_LA_CLE_GENEREE"

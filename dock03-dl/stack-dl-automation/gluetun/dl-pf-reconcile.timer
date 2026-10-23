@@ -1,0 +1,11 @@
+# /etc/systemd/system/dl-pf-reconcile.timer
+[Unit]
+Description=Réconciliation PF gluetun/qBittorrent chaque minute
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=1min
+AccuracySec=5s
+
+[Install]
+WantedBy=timers.target
