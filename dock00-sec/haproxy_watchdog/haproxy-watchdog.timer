@@ -1,10 +1,10 @@
 [Unit]
-Description=Watchdog haproxy — vérification toutes les 5 minutes
+Description=Lance le watchdog HAProxy toutes les 2 minutes
 
 [Timer]
-OnBootSec=2min
-OnUnitActiveSec=5min
-AccuracySec=30s
+OnBootSec=3min
+OnUnitInactiveSec=2min
+AccuracySec=15s
 
 [Install]
 WantedBy=timers.target

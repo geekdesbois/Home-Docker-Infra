@@ -19,6 +19,7 @@ services:
     env_file:
       - /etc/portainer-env/dmzsec.env
     restart: always
+    stop_grace_period: 30s
     depends_on: [syslog]
     networks:
       dmzsec:
