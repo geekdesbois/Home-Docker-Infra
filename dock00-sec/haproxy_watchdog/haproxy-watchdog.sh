@@ -59,7 +59,7 @@ alert() {  # alert <conteneur> <sujet ASCII> [détail]
     [[ -n $detail ]] && printf '\n%s\n' "$detail"
     [[ -n $state  ]] && printf '\nÉtat : %s\n' "$state"
     [[ -n $logs   ]] && printf '\n--- docker logs --tail 40 %s ---\n%s\n' "$c" "$logs"
-  } | sendmail -t || warn "échec d'envoi du mail d'alerte"
+  } | sendmail -odi -t || warn "échec d'envoi du mail d'alerte"
 }
 
 alert_once() {  # alert_once <conteneur> <clé> <sujet> [détail] — une seule fois jusqu'au retour à la normale

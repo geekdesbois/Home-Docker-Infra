@@ -1,21 +1,15 @@
 # /etc/default/haproxy-watchdog — surcharges du watchdog (tout est optionnel)
 
 # Conteneurs surveillés (syslog et crowdsec n'ont pas de healthcheck : seul l'état running compte)
-CONTAINERS="haproxy"
-#CONTAINERS="haproxy crowdsec syslog"
+CONTAINERS="haproxy crowdsec syslog"
 
 # Alertes mail (nécessite un sendmail : apt install dma, smarthost = le Synology)
-#MAIL_TO="admin@example.org"
-#MAIL_FROM="watchdog@dock01.example.org"
+MAIL_TO="geekdesbois@zonelibre.live"
+MAIL_FROM="dock00-sec@terre-du-milieu.org"
 
-# Seuils
-#GRACE=60
-#MAX_RESTARTS=3
-#RESTART_WINDOW=1800
-#HEALTH_WAIT=150
-#PROBE_FAILS=2
+# Sonde HTTP CrowdSec (/health répond 200)
+PROBE_URL[crowdsec]="http://127.0.0.1:8888/health"
 
-# Sondes HTTP / validations supplémentaires par conteneur
-#PROBE_URL[haproxy]="http://127.0.0.1:8404/healthz"
-#PROBE_URL[haproxy]=""          # désactive la sonde HTTP
-#VALIDATE_CMD[haproxy]="haproxy -c -q -f /usr/local/etc/haproxy/haproxy.cfg"
+# Validation avant restart (testées : code 0)
+VALIDATE_CMD[syslog]="syslog-ng --syntax-only -f /etc/syslog-ng/syslog-ng.conf"
+VALIDATE_CMD[crowdsec]="crowdsec -t"
