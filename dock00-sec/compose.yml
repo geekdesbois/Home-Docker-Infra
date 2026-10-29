@@ -89,7 +89,7 @@ services:
       - "6060:6060/tcp"
 
   crowdsec-spoa:
-    image: crowdsecurity/spoa-bouncer:latest   # tester avec latest, puis figer le tag validé
+    image: crowdsecurity/spoa-bouncer:v0.3.1   # tester avec latest, puis figer le tag validé
     container_name: crowdsec-spoa
     restart: unless-stopped
     depends_on: [crowdsec]
