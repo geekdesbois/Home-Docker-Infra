@@ -1,6 +1,6 @@
 services:
   syslog:
-    image: balabit/syslog-ng:4.7.1
+    image: balabit/syslog-ng:4.11.0
     container_name: syslog
     restart: unless-stopped
     networks:
