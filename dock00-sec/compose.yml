@@ -14,7 +14,7 @@ services:
       - /docker/syslog/log:/var/log
 
   haproxy:
-    image: haproxy:3.0
+    image: haproxy:3.4.7
     container_name: haproxy
     env_file:
       - /etc/portainer-env/dmzsec.env
@@ -33,12 +33,13 @@ services:
     environment:
       - TZ=${TZ}
     volumes:
-      - /docker/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
-      - /docker/haproxy/crt-list.txt:/usr/local/etc/haproxy/crt-list.txt:ro
-      - /docker/haproxy/certs:/usr/local/etc/haproxy/certs:ro
-      - /docker/haproxy/hosts_internal.lst:/usr/local/etc/haproxy/hosts_internal.lst:ro     
-      - /docker/haproxy/hosts_known_http.lst:/usr/local/etc/haproxy/hosts_known_http.lst:ro
-      - /docker/haproxy/hosts_synology_http.lst:/usr/local/etc/haproxy/hosts_synology_http.lst:ro
+      - /docker/haproxy:/usr/local/etc/haproxy:ro
+  #   - /docker/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+  #   - /docker/haproxy/crt-list.txt:/usr/local/etc/haproxy/crt-list.txt:ro
+  #   - /docker/haproxy/certs:/usr/local/etc/haproxy/certs:ro
+  #   - /docker/haproxy/hosts_internal.lst:/usr/local/etc/haproxy/hosts_internal.lst:ro     
+  #   - /docker/haproxy/hosts_known_http.lst:/usr/local/etc/haproxy/hosts_known_http.lst:ro
+  #   - /docker/haproxy/hosts_synology_http.lst:/usr/local/etc/haproxy/hosts_synology_http.lst:ro
   #   - /docker/haproxy/sock:/sock     # Socket pour haproxy-exporter
     healthcheck:
       test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8404 && printf 'GET /healthz HTTP/1.0\\r\\n\\r\\n' >&3 && head -n1 <&3 | grep -q ' 200 '"]
