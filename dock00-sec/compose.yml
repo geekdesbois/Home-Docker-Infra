@@ -20,7 +20,7 @@ services:
       - /etc/portainer-env/dmzsec.env
     restart: always
     stop_grace_period: 30s
-    depends_on: [syslog]
+    depends_on: [syslog, crowdsec-spoa]
     networks:
       dmzsec:
         ipv4_address: 172.31.90.11    
@@ -76,7 +76,7 @@ services:
     environment:
       - TZ=${TZ}
       # Collections de base utiles ici
-      - COLLECTIONS=crowdsecurity/haproxy
+      - COLLECTIONS=crowdsecurity/haproxy crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules
     volumes:
       - /docker/crowdsec/data:/var/lib/crowdsec/data
       - /docker/crowdsec/config:/etc/crowdsec
@@ -87,6 +87,17 @@ services:
       # LAPI (pour bouncer OPNsense)
       - "8888:8080/tcp"
       - "6060:6060/tcp"
+
+  crowdsec-spoa:
+    image: crowdsecurity/spoa-bouncer:latest   # tester avec latest, puis figer le tag validé
+    container_name: crowdsec-spoa
+    restart: unless-stopped
+    depends_on: [crowdsec]
+    networks:
+      dmzsec:
+        ipv4_address: 172.31.90.12
+    volumes:
+      - /docker/crowdsec-spoa/crowdsec-spoa-bouncer.yaml:/etc/crowdsec/bouncers/crowdsec-spoa-bouncer.yaml:ro
 
 networks:
   dmzsec:

@@ -1,0 +1,18 @@
+log_mode: stdout
+log_level: info
+
+update_frequency: 10s
+api_url: http://crowdsec:8080/
+api_key: <CLE_GENEREE>
+
+listen_tcp: 0.0.0.0:9000
+
+appsec_url: http://crowdsec:7422
+appsec_timeout: 200ms
+
+hosts:
+  - host: "*"
+    appsec:
+      always_send: false
+    captcha:
+      fallback_remediation: ban
