@@ -65,7 +65,7 @@ services:
  #    - "9101:9101/tcp"
 
   crowdsec:
-    image: crowdsecurity/crowdsec:1.8.1
+    image: crowdsecurity/crowdsec:v1.8.1
     container_name: crowdsec
     env_file:
       - /etc/portainer-env/dmzsec.env
