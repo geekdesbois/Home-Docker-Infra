@@ -58,7 +58,7 @@ services:
   grafana:
     # PALIER : 11.1.4 -> 11.6.16 (repérer/migrer les panels Angular) -> 13.2.5
     # Backup de /docker/monitoring/grafana/data obligatoire (migration de la table annotation en v12)
-    image: grafana/grafana:11.6.16
+    image: grafana/grafana:13.2.5
     container_name: grafana
     env_file:
       - /etc/portainer-env/grafana.env
