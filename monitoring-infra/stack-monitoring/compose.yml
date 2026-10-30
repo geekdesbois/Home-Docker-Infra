@@ -12,6 +12,7 @@ services:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.path=/prometheus"
       - "--storage.tsdb.retention.time=30d"
+      - "--web.external-url=http://dock02-pwr.leahparnal.org:9090"
 #     - "--storage.tsdb.retention.size=40GB"   # garde-fou disque, optionnel
 #     - "--web.enable-lifecycle"
     volumes:
@@ -30,6 +31,7 @@ services:
     command:
       - "--config.file=/etc/alertmanager/alertmanager.yml"
       - "--storage.path=/alertmanager"
+      - "--web.external-url=http://dock02-pwr.leahparnal.org:9093"
     volumes:
       - /docker/monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
       - /docker/monitoring/alertmanager/data:/alertmanager

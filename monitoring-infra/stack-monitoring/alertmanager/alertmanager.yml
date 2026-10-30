@@ -15,6 +15,10 @@ route:
         - alertname="Dock01_LVM_Locked_At_Boot"
       receiver: dock01-mail
       repeat_interval: 30m
+    - matchers:
+        - severity="warning"
+      receiver: default
+      repeat_interval: 24h
 
 # Nouveau : évite les doublons de mails.
 inhibit_rules:
