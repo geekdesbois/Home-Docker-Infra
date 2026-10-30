@@ -1,0 +1,33 @@
+type: http
+name: http_loki
+log_level: info
+
+group_wait: 30s
+max_retry: 3
+timeout: 10s
+
+url: http://172.16.70.12:3100/loki/api/v1/push
+method: POST
+headers:
+  Content-Type: application/json
+
+format: |
+  {"streams":[{"stream":{"job":"crowdsec","host":"dock00-sec"},"values":[
+  {{- range $i, $a := . -}}
+  {{- if $i }},{{ end -}}
+  {{- $meta := dict -}}
+  {{- if $a.Events }}{{ range (index $a.Events 0).Meta }}{{ $_ := set $meta .Key .Value }}{{ end }}{{ end -}}
+  ["{{ now | unixEpoch }}00000{{ printf "%04d" $i }}", {{ dict
+      "ip" $a.Source.Value
+      "country" $a.Source.Cn
+      "as_name" $a.Source.AsName
+      "as_number" $a.Source.AsNumber
+      "scenario" $a.Scenario
+      "remediation" $a.Remediation
+      "start_at" $a.StartAt
+      "events_count" (len $a.Events)
+      "decisions" $a.Decisions
+      "meta" $meta
+      | toJson | toJson }}]
+  {{- end -}}
+  ]}]}

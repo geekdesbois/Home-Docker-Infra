@@ -1,28 +1,34 @@
+name: internal_waf_notify
+filters:
+  - Alert.GetScope() == "Ip" && (IpInRange(Alert.GetValue(), "192.168.0.0/16") || IpInRange(Alert.GetValue(), "172.16.0.0/12") || IpInRange(Alert.GetValue(), "10.0.0.0/8"))
+notifications:
+  - email_default
+  - http_loki
+on_success: break
+---
 name: http_aggressive_remediation
 filters:
-  - Alert.Remediation == true
-  - Alert.GetScope() == "Ip"
-  - Alert.GetScenario() contains "http-"
+  - Alert.Remediation == true && Alert.GetScope() == "Ip" && Alert.GetScenario() contains "http-" && !IpInRange(Alert.GetValue(), "192.168.0.0/16") && !IpInRange(Alert.GetValue(), "172.16.0.0/12") && !IpInRange(Alert.GetValue(), "10.0.0.0/8")
 decisions:
   - type: ban
     duration: 24h
 duration_expr: Sprintf('%dh', (GetDecisionsCount(Alert.GetValue()) + 1) * 24)
 notifications:
   - email_default
+  - http_loki
 on_success: break
-
 ---
 name: default_ip_remediation
 filters:
-  - Alert.Remediation == true && Alert.GetScope() == "Ip"
+  - Alert.Remediation == true && Alert.GetScope() == "Ip" && !IpInRange(Alert.GetValue(), "192.168.0.0/16") && !IpInRange(Alert.GetValue(), "172.16.0.0/12") && !IpInRange(Alert.GetValue(), "10.0.0.0/8")
 decisions:
   - type: ban
     duration: 12h
 duration_expr: Sprintf('%dh', (GetDecisionsCount(Alert.GetValue()) + 1) * 12)
 notifications:
   - email_default
+  - http_loki
 on_success: break
-
 ---
 name: default_range_remediation
 filters:
@@ -31,5 +37,13 @@ decisions:
   - type: ban
     duration: 24h
 notifications:
-  - email_default    
+  - email_default
+  - http_loki
+on_success: break
+---
+name: waf_log_only
+filters:
+  - Alert.Remediation == false && Alert.GetScope() == "Ip"
+notifications:
+  - http_loki
 on_success: break

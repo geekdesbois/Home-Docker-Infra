@@ -41,11 +41,12 @@ scrape_configs:
         labels:
           host: dock03-dl
 
-  - job_name: cerbere
+
+  - job_name: opnsense
     static_configs:
       - targets: ["172.16.70.254:9100"]
         labels:
-          host: cerbere              
+          host: cerbere
 
   - job_name: cadvisor
     static_configs:
@@ -56,9 +57,9 @@ scrape_configs:
       - targets: ["172.16.20.1:8000"]
         labels: { host: "dock04-nina" }
       - targets: ["172.16.90.1:8000"]
-        labels: { host: "dock00-sec" }      
+        labels: { host: "dock00-sec" }
       - targets: ["172.16.40.10:8000"]
-        labels: { host: "dock03-dl" }     
+        labels: { host: "dock03-dl" }
 
     metric_relabel_configs:
       # Garder uniquement les séries "containers docker"
@@ -233,10 +234,18 @@ scrape_configs:
 #         host: "dock00-sec"
 #         role: "dmzsec-haproxy"
 
+  - job_name: haproxy
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['172.16.90.1:8404']
+        labels:
+          host: "dock00-sec"
+          role: "dmzsec-haproxy"
+
   - job_name: "crowdsec"
     static_configs:
       - targets:
           - "172.16.90.1:6060"
         labels:
           host: "dock00-sec"
-          role: "dmzsec-crowdsec"    
+          role: "dmzsec-crowdsec"

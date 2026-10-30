@@ -6,7 +6,7 @@ services:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.path=/prometheus"
       - "--storage.tsdb.retention.time=30d"
-      - "--web.enable-lifecycle"
+#     - "--web.enable-lifecycle"
     volumes:
       - /docker/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - /docker/monitoring/prometheus/rules:/etc/prometheus/rules:ro
@@ -27,7 +27,7 @@ services:
       - /docker/monitoring/alertmanager/data:/alertmanager
     restart: unless-stopped
     ports:
-      - "9093:9093"    
+#     - "9093:9093"    
     networks: [mon_net]
 
   loki:
@@ -89,7 +89,7 @@ services:
     volumes:
       - /docker/monitoring/snmp-exporter/snmp.yml:/etc/snmp_exporter/snmp.yml:ro
     ports:
-      - "9116:9116"      
+#     - "9116:9116"      
     restart: unless-stopped
     networks: [mon_net]
 
@@ -99,7 +99,7 @@ services:
     env_file:
       - /etc/portainer-env/vmware-exporter.env
     ports:
-      - "9272:9272" 
+#     - "9272:9272" 
     restart: unless-stopped
     networks: [mon_net]
 
