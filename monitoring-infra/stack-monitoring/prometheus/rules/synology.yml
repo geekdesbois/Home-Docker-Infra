@@ -1,0 +1,51 @@
+groups:
+  # Codes d'état selon les MIB Synology (SYNOLOGY-RAID-MIB / SYNOLOGY-DISK-MIB) :
+  # raidStatus 11 = Degrade, 12 = Crashed ; diskStatus 4 = SystemPartitionFailed, 5 = Crashed
+  - name: synology
+    rules:
+      - alert: SynologyPoolDegraded
+        expr: syno_storage_status{job="snmp-synology", storageName=~"Storage Pool .*"} == 11
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Synology : {{ $labels.storageName }} DÉGRADÉ"
+          description: "{{ $labels.storageName }} est en état dégradé : un disque est sorti du RAID. Vérifier DSM > Gestionnaire de stockage."
+
+      - alert: SynologyPoolCrashed
+        expr: syno_storage_status{job="snmp-synology", storageName=~"Storage Pool .*"} == 12
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Synology : {{ $labels.storageName }} CRASHÉ"
+          description: "{{ $labels.storageName }} est en état crashé."
+
+      - alert: SynologyDiskFailed
+        expr: syno_disk_status{job="snmp-synology"} >= 4
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Synology : disque {{ $labels.diskName }} en panne"
+          description: "Le disque {{ $labels.diskName }} ({{ $labels.diskModel }}) remonte le statut {{ $value }} (4 = partition système HS, 5 = crashé)."
+
+      - alert: SynologyDiskHot
+        expr: syno_disk_temperature_c{job="snmp-synology"} > 55
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Synology : disque {{ $labels.diskName }} à {{ $value }} °C"
+          description: "Le disque {{ $labels.diskName }} dépasse 55 °C depuis 15 min : vérifier la ventilation du NAS."
+
+      - alert: SynologyVolumeAlmostFull
+        expr: |
+          100 * (1 - syno_storage_free_bytes{job="snmp-synology", storageName=~"Volume .*"}
+                    / syno_storage_total_bytes{job="snmp-synology", storageName=~"Volume .*"}) > 90
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Synology : {{ $labels.storageName }} > 90 %"
+          description: "{{ $labels.storageName }} est rempli à {{ $value | printf \"%.1f\" }} %."
