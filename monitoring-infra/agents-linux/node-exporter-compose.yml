@@ -4,6 +4,7 @@ services:
     pid: host
     command:
       - "--path.rootfs=/host"
+      - "--collector.textfile.directory=/host/var/lib/node_exporter/textfile"      
     ports:
       - "9100:9100"
     volumes:
