@@ -16,6 +16,36 @@ route:
       receiver: dock01-mail
       repeat_interval: 30m
 
+# Nouveau : évite les doublons de mails.
+inhibit_rules:
+  # DOCK01 bloqué au boot : l'alerte dédiée suffit, on masque TargetDown / HostUnreachable
+  - source_matchers:
+      - alertname="Dock01_LVM_Locked_At_Boot"
+    target_matchers:
+      - alertname=~"TargetDown|HostUnreachable"
+    equal: ["host"]
+
+  # Hôte injoignable en ICMP : inutile de recevoir en plus les scrapes en échec du même hôte
+  - source_matchers:
+      - alertname=~"HostUnreachable|HostPingDown"
+    target_matchers:
+      - alertname=~"TargetDown|DnsUdpDown|DnsTcpDown|AdPortDown"
+    equal: ["host"]
+
+  # FS > 95 % masque le "> 90 %" et la prédiction sur le même point de montage
+  - source_matchers:
+      - alertname="LinuxFilesystemFullCritical"
+    target_matchers:
+      - alertname=~"LinuxFilesystemAlmostFull|LinuxFilesystemFillsIn24h"
+    equal: ["host", "mountpoint"]
+
+  # Datastore > 98 % masque le "> 95 %"
+  - source_matchers:
+      - alertname="ESXiDatastoreFullCritical"
+    target_matchers:
+      - alertname="ESXiDatastoreAlmostFull"
+    equal: ["ds_name"]
+
 receivers:
   - name: default
     email_configs:

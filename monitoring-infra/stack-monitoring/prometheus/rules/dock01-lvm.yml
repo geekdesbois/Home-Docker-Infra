@@ -2,7 +2,7 @@ groups:
 - name: dock01-lvm
   rules:
   - alert: Dock01_LVM_Locked_At_Boot
-    expr: up{host="dock01"} == 0
+    expr: up{job="dock01"} == 0
     for: 5m
     labels:
       severity: critical

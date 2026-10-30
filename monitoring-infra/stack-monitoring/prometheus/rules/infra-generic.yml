@@ -1,0 +1,168 @@
+groups:
+  # ---------------------------------------------------------------
+  # Disponibilité des cibles : aujourd'hui seuls dock01 et master
+  # avaient une alerte, tout le reste pouvait tomber en silence.
+  # ---------------------------------------------------------------
+  - name: infra-availability
+    rules:
+      - alert: TargetDown
+        expr: up == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Scrape en échec : {{ $labels.job }} / {{ $labels.instance }}"
+          description: "Prometheus n'arrive plus à scraper {{ $labels.instance }} (job={{ $labels.job }}, host={{ $labels.host }}) depuis 5 min."
+
+  # ---------------------------------------------------------------
+  # Blackbox : up==1 même quand la sonde échoue, il faut probe_success.
+  # master a déjà ses alertes dédiées dans ad-dns-blackbox.yml.
+  # ---------------------------------------------------------------
+  - name: blackbox-generic
+    rules:
+      - alert: HostUnreachable
+        expr: probe_success{job="blackbox-icmp", host!="master"} == 0
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Ping DOWN : {{ $labels.host }}"
+          description: "{{ $labels.fqdn }} ({{ $labels.instance }}) ne répond plus en ICMP depuis 3 min."
+
+      - alert: HttpsEndpointDown
+        expr: probe_success{job="blackbox-https"} == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Service HTTPS injoignable : {{ $labels.instance }}"
+          description: "La sonde HTTPS vers {{ $labels.instance }} échoue depuis 5 min."
+
+      - alert: TlsCertExpiresSoon
+        expr: probe_ssl_earliest_cert_expiry{job="blackbox-https"} - time() < 14 * 86400
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "Certificat bientôt expiré : {{ $labels.instance }}"
+          description: "Le certificat servi par {{ $labels.instance }} expire dans {{ $value | humanizeDuration }} : vérifier le renouvellement ACME sur OPNsense."
+
+  # ---------------------------------------------------------------
+  # Linux (node_exporter) — les filtres excluent les FS virtuels
+  # et les montages réseau (CIFS du Synology sur dock02-pwr).
+  # ---------------------------------------------------------------
+  - name: linux-hosts
+    rules:
+      - alert: LinuxFilesystemAlmostFull
+        expr: |
+          100 * (1 - node_filesystem_avail_bytes{fstype!~"tmpfs|overlay|squashfs|nsfs|devfs|cifs|smb3|nfs.*|fuse.*"}
+                    / node_filesystem_size_bytes{fstype!~"tmpfs|overlay|squashfs|nsfs|devfs|cifs|smb3|nfs.*|fuse.*"}) > 90
+          and node_filesystem_readonly == 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "FS > 90 % : {{ $labels.host }} {{ $labels.mountpoint }}"
+          description: "{{ $labels.mountpoint }} sur {{ $labels.host }} est à {{ $value | printf \"%.1f\" }} %."
+
+      - alert: LinuxFilesystemFullCritical
+        expr: |
+          100 * (1 - node_filesystem_avail_bytes{fstype!~"tmpfs|overlay|squashfs|nsfs|devfs|cifs|smb3|nfs.*|fuse.*"}
+                    / node_filesystem_size_bytes{fstype!~"tmpfs|overlay|squashfs|nsfs|devfs|cifs|smb3|nfs.*|fuse.*"}) > 95
+          and node_filesystem_readonly == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "FS > 95 % : {{ $labels.host }} {{ $labels.mountpoint }}"
+          description: "{{ $labels.mountpoint }} sur {{ $labels.host }} est à {{ $value | printf \"%.1f\" }} %."
+
+      - alert: LinuxFilesystemFillsIn24h
+        expr: |
+          predict_linear(node_filesystem_avail_bytes{fstype!~"tmpfs|overlay|squashfs|nsfs|devfs|cifs|smb3|nfs.*|fuse.*"}[6h], 24 * 3600) < 0
+          and 100 * node_filesystem_avail_bytes / node_filesystem_size_bytes < 20
+          and node_filesystem_readonly == 0
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "FS plein sous 24 h : {{ $labels.host }} {{ $labels.mountpoint }}"
+          description: "À ce rythme, {{ $labels.mountpoint }} sur {{ $labels.host }} sera plein dans moins de 24 h."
+
+      - alert: LinuxMemoryLow
+        expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes < 0.10
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "RAM disponible < 10 % : {{ $labels.host }}"
+          description: "{{ $labels.host }} n'a plus que {{ $value | humanizePercentage }} de RAM disponible."
+
+  # ---------------------------------------------------------------
+  # Windows (windows_exporter) : master + datac
+  # ---------------------------------------------------------------
+  - name: windows-hosts
+    rules:
+      - alert: WindowsVolumeAlmostFull
+        expr: |
+          100 * (1 - windows_logical_disk_free_bytes{volume!~"HarddiskVolume.*"}
+                    / windows_logical_disk_size_bytes{volume!~"HarddiskVolume.*"}) > 90
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Volume > 90 % : {{ $labels.host }} {{ $labels.volume }}"
+          description: "{{ $labels.volume }} sur {{ $labels.host }} est à {{ $value | printf \"%.1f\" }} %."
+
+  # ---------------------------------------------------------------
+  # Conteneurs critiques : couvre le cas "pas redémarré après les MAJ"
+  # vu sur HAProxy et Plex. NOMS DE SERVICE À VÉRIFIER dans Grafana :
+  #   label_values(container_last_seen{host="dock00-sec"}, service)
+  # ---------------------------------------------------------------
+  - name: docker-critical-containers
+    rules:
+      - alert: CriticalContainerMissing
+        expr: |
+          absent_over_time(container_last_seen{host="dock00-sec", service="haproxy"}[5m])
+          or absent_over_time(container_last_seen{host="dock00-sec", service="crowdsec"}[5m])
+          or absent_over_time(container_last_seen{host="dock00-sec", service="crowdsec-spoa"}[5m])
+          or absent_over_time(container_last_seen{host="dock02-pwr", service="plex"}[5m])
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Conteneur absent : {{ $labels.service }} sur {{ $labels.host }}"
+          description: "cAdvisor ne voit plus le conteneur {{ $labels.service }} sur {{ $labels.host }} depuis 10 min."
+
+  # ---------------------------------------------------------------
+  # Auto-surveillance de la stack (nécessite les jobs "prometheus"
+  # et "alertmanager" dans prometheus.yml)
+  # ---------------------------------------------------------------
+  - name: monitoring-selfcheck
+    rules:
+      - alert: PrometheusConfigReloadFailed
+        expr: prometheus_config_last_reload_successful == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Rechargement de la config Prometheus en échec"
+          description: "La dernière config chargée par Prometheus est invalide, il tourne sur l'ancienne."
+
+      - alert: PrometheusRuleEvaluationFailures
+        expr: increase(prometheus_rule_evaluation_failures_total[10m]) > 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Règles Prometheus en erreur ({{ $labels.rule_group }})"
+          description: "Des règles du groupe {{ $labels.rule_group }} échouent à l'évaluation."
+
+      - alert: AlertmanagerNotificationsFailing
+        expr: increase(alertmanager_notifications_failed_total[15m]) > 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Alertmanager n'arrive plus à notifier ({{ $labels.integration }})"
+          description: "Envois en échec vers {{ $labels.integration }} : vérifier le relais SMTP du Synology."

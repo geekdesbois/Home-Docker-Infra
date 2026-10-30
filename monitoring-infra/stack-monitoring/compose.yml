@@ -1,11 +1,18 @@
+# Stack monitoring-hub (dock02-pwr) — cible de montée de version, oct. 2026
+# Ordre conseillé et paliers intermédiaires : voir les commentaires "PALIER" par service.
+
 services:
   prometheus:
-    image: prom/prometheus:v2.54.1
+    # PALIER : v2.54.1 -> v2.55.1 (quelques jours) -> v3.13.5
+    # La TSDB écrite par la v3 n'est relisible que par >= 2.55 : passer par 2.55.1 garde un retour arrière possible.
+    # v3.13.5 = branche LTS ; la dernière stable est v3.15.1 si tu préfères suivre le rythme normal.
+    image: prom/prometheus:v2.55.1
     container_name: prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.path=/prometheus"
       - "--storage.tsdb.retention.time=30d"
+#     - "--storage.tsdb.retention.size=40GB"   # garde-fou disque, optionnel
 #     - "--web.enable-lifecycle"
     volumes:
       - /docker/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
@@ -13,11 +20,12 @@ services:
       - /docker/monitoring/prometheus/data:/prometheus
     restart: unless-stopped
     ports:
-      - "9090:9090"    
+      - "9090:9090"
     networks: [mon_net]
 
   alertmanager:
-    image: prom/alertmanager:v0.28.0
+    # v0.28.0 -> v0.34.2 : valider alertmanager.yml avec amtool de la nouvelle image avant bascule
+    image: prom/alertmanager:v0.34.2
     container_name: alertmanager
     command:
       - "--config.file=/etc/alertmanager/alertmanager.yml"
@@ -27,11 +35,12 @@ services:
       - /docker/monitoring/alertmanager/data:/alertmanager
     restart: unless-stopped
 #   ports:
-#     - "9093:9093"    
+#     - "9093:9093"
     networks: [mon_net]
 
   loki:
-    image: grafana/loki:3.1.2
+    # 3.1.2 -> 3.7.9 (reste en 3.x, schéma v13 inchangé) ; loki-config.yml à relire avant
+    image: grafana/loki:3.7.9
     container_name: loki
     command: ["-config.file=/etc/loki/loki-config.yml"]
     volumes:
@@ -43,7 +52,9 @@ services:
     networks: [mon_net]
 
   grafana:
-    image: grafana/grafana:11.1.4
+    # PALIER : 11.1.4 -> 11.6.16 (repérer/migrer les panels Angular) -> 13.2.5
+    # Backup de /docker/monitoring/grafana/data obligatoire (migration de la table annotation en v12)
+    image: grafana/grafana:11.6.16
     container_name: grafana
     env_file:
       - /etc/portainer-env/grafana.env
@@ -60,7 +71,9 @@ services:
     networks: [mon_net]
 
   uptime-kuma:
-    image: louislam/uptime-kuma:1.23.13
+    # 1.23.13 -> 2.5.8 : migration de base au 1er démarrage (plusieurs minutes), copie du dossier data AVANT
+    # Variante allégée possible : 2.5.8-slim (sans MariaDB embarqué ni Chromium pour les sondes "real browser")
+    image: louislam/uptime-kuma:2.5.8
     container_name: uptime-kuma
     volumes:
       - /docker/monitoring/uptime-kuma/data:/app/data
@@ -70,7 +83,8 @@ services:
     networks: [mon_net]
 
   blackbox-exporter:
-    image: prom/blackbox-exporter:v0.25.0
+    # v0.25.0 -> v0.29.1 : valider blackbox.yml avec --config.check
+    image: prom/blackbox-exporter:v0.29.1
     container_name: blackbox-exporter
     command:
       - "--config.file=/etc/blackbox/blackbox.yml"
@@ -81,7 +95,8 @@ services:
     networks: [mon_net]
 
   snmp-exporter:
-    image: prom/snmp-exporter:v0.30.1
+    # v0.30.1 -> v0.31.0 : sans impact tant que snmp.yml n'est PAS régénéré avec le generator 0.31
+    image: prom/snmp-exporter:v0.31.0
     container_name: snmp-exporter
     command:
       - "--config.file=/etc/snmp_exporter/snmp.yml"
@@ -89,17 +104,19 @@ services:
     volumes:
       - /docker/monitoring/snmp-exporter/snmp.yml:/etc/snmp_exporter/snmp.yml:ro
 #   ports:
-#     - "9116:9116"      
+#     - "9116:9116"
     restart: unless-stopped
     networks: [mon_net]
 
   vmware-exporter:
-    image: pryorda/vmware_exporter:latest
+    # Projet quasi abandonné : figer le digest qui tourne aujourd'hui plutôt que :latest
+    # docker inspect --format '{{index .RepoDigests 0}}' pryorda/vmware_exporter:latest
+    image: pryorda/vmware_exporter@sha256:REMPLACER_PAR_LE_DIGEST_ACTUEL
     container_name: vmware-exporter
     env_file:
       - /etc/portainer-env/vmware-exporter.env
 #   ports:
-#     - "9272:9272" 
+#     - "9272:9272"
     restart: unless-stopped
     networks: [mon_net]
 

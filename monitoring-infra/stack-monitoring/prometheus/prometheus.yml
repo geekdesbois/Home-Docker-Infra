@@ -11,6 +11,32 @@ alerting:
         - targets: ["alertmanager:9093"]
 
 scrape_configs:
+  # ---------------------------------------------------------------
+  # Auto-surveillance de la stack (nouveau)
+  # ---------------------------------------------------------------
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+        labels: { host: "dock02-pwr", role: "monitoring" }
+
+  - job_name: alertmanager
+    static_configs:
+      - targets: ["alertmanager:9093"]
+        labels: { host: "dock02-pwr", role: "monitoring" }
+
+  - job_name: loki
+    static_configs:
+      - targets: ["loki:3100"]
+        labels: { host: "dock02-pwr", role: "monitoring" }
+
+  - job_name: grafana
+    static_configs:
+      - targets: ["grafana:3000"]
+        labels: { host: "dock02-pwr", role: "monitoring" }
+
+  # ---------------------------------------------------------------
+  # Hôtes Linux (node_exporter)
+  # ---------------------------------------------------------------
   - job_name: dock02
     static_configs:
       - targets: ["172.16.70.12:9100"]
@@ -41,7 +67,6 @@ scrape_configs:
         labels:
           host: dock03-dl
 
-
   - job_name: opnsense
     static_configs:
       - targets: ["172.16.70.254:9100"]
@@ -67,13 +92,13 @@ scrape_configs:
         regex: '/system\.slice/docker-[0-9a-f]{64}\.scope'
         action: keep
 
-      # (Optionnel) virer les labels ultra-verboses qui explosent la cardinalité
+      # Virer les labels ultra-verbeux qui explosent la cardinalité
       - regex: 'container_label_org_opencontainers_.*'
         action: labeldrop
       - regex: 'container_label_com_docker_compose_project_config_files|container_label_com_docker_compose_project_working_dir'
         action: labeldrop
 
-      # Renommage lisible
+      # Renommage lisible (utilisé par les alertes conteneurs)
       - source_labels: [container_label_com_docker_compose_project]
         target_label: project
         action: replace
@@ -82,6 +107,9 @@ scrape_configs:
         target_label: service
         action: replace
 
+  # ---------------------------------------------------------------
+  # Blackbox
+  # ---------------------------------------------------------------
   - job_name: blackbox-icmp
     metrics_path: /probe
     params:
@@ -99,6 +127,16 @@ scrape_configs:
         labels:
           host: dock04-nina
           fqdn: dock04-nina.leahparnal.org
+      # Ajoutés : à garder seulement si OPNsense laisse passer l'ICMP
+      # depuis le VLAN SRV vers ces DMZ (sinon HostUnreachable sonnera en continu)
+      - targets: ["172.16.90.1"]
+        labels:
+          host: dock00-sec
+          fqdn: dock00-sec.leahparnal.org
+      - targets: ["172.16.40.10"]
+        labels:
+          host: dock03-dl
+          fqdn: dock03-dl.leahparnal.org
       - targets: ["172.16.70.1"]
         labels:
           host: master
@@ -117,18 +155,36 @@ scrape_configs:
       - target_label: __address__
         replacement: blackbox-exporter:9115
 
-  - job_name: "windows"
+  # Nouveau : disponibilité + expiration des certificats des services publiés.
+  # À COMPLÉTER avec tes FQDN réels derrière HAProxy.
+  - job_name: blackbox-https
+    metrics_path: /probe
+    scrape_interval: 60s
+    params:
+      module: [https_2xx]
     static_configs:
       - targets:
-          - "172.16.70.1:9182"
-        labels:
-          host: "master"
-          role: "dc"
-      - targets:
-          - "172.16.70.2:9182"
-        labels:
-          host: "datac"
-          role: "file-server"
+          - "https://secrets.zonelibre.live"      # TODO : FQDN réel Vaultwarden
+          - "https://photos.zonelibre.live"
+          - "https://cloud.zonelibre.live"
+          - "https://files.zonelibre.live"
+          - "https://monitoring.zonelibre.live"
+          - "https://dns.zonelibre.live"
+          - "https://pdf.zonelibre.live"
+          - "https://firefox.zonelibre.live"
+          - "https://qbt.zonelibre.live"
+          - "https://convert.zonelibre.live"
+          - "https://cal.zonelibre.live"
+          - "https://card.zonelibre.live"
+          - "https://prog.nina.fm"
+          - "https://flux.nina.fm"
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
 
   - job_name: blackbox-dns-udp
     metrics_path: /probe
@@ -189,10 +245,34 @@ scrape_configs:
       - target_label: __address__
         replacement: blackbox-exporter:9115
 
+  # ---------------------------------------------------------------
+  # Windows (windows_exporter)
+  # ---------------------------------------------------------------
+  - job_name: "windows"
+    static_configs:
+      - targets:
+          - "172.16.70.1:9182"
+        labels:
+          host: "master"
+          role: "dc"
+      - targets:
+          - "172.16.70.2:9182"
+        labels:
+          host: "datac"
+          role: "file-server"
+
+  # ---------------------------------------------------------------
+  # VMware / SNMP
+  # ---------------------------------------------------------------
   - job_name: vmware-api
+    # Après passage en Prometheus 3 SEULEMENT (option inconnue en 2.55, la config ne chargerait pas) :
+    # décommenter si /targets affiche "unsupported Content-Type" pour ce job.
+    # fallback_scrape_protocol: PrometheusText0.0.4
     static_configs:
       - targets:
           - vmware-exporter:9272
+        labels:
+          host: "esxi"
 
   - job_name: "snmp-esxi"
     metrics_path: /snmp
@@ -201,6 +281,8 @@ scrape_configs:
       auth: [monitoring_ro_v2]
     static_configs:
       - targets: ["172.16.70.8"]
+        labels:
+          host: "esxi"
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -226,14 +308,9 @@ scrape_configs:
       - target_label: __address__
         replacement: snmp-exporter:9116
 
-# - job_name: "haproxy"
-#   static_configs:
-#     - targets:
-#         - "172.16.90.1:9101"
-#       labels:
-#         host: "dock00-sec"
-#         role: "dmzsec-haproxy"
-
+  # ---------------------------------------------------------------
+  # DMZ sécurité (dock00-sec)
+  # ---------------------------------------------------------------
   - job_name: haproxy
     metrics_path: /metrics
     static_configs:

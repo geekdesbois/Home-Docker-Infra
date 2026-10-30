@@ -9,13 +9,25 @@ modules:
     prober: tcp
     timeout: 5s
 
+  # Nouveau : services HTTPS publiés derrière HAProxy.
+  # probe_ssl_earliest_cert_expiry sert à l'alerte TlsCertExpiresSoon.
+  # Un 401/403 compte comme "service vivant" (pages de login, CalDAV...).
+  https_2xx:
+    prober: http
+    timeout: 10s
+    http:
+      preferred_ip_protocol: ip4
+      valid_status_codes: [200, 301, 302, 401, 403]
+      follow_redirects: false
+      fail_if_not_ssl: true
+
   dns_udp:
     prober: dns
     timeout: 5s
     dns:
       transport_protocol: udp
       preferred_ip_protocol: ip4
-      # on teste explicitement ton DNS AD, pas un resolver externe
+      # on teste explicitement le DNS AD, pas un resolver externe
       query_name: "leahparnal.org"
       query_type: "SOA"
 
