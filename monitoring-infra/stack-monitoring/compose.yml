@@ -6,7 +6,7 @@ services:
     # PALIER : v2.54.1 -> v2.55.1 (quelques jours) -> v3.13.5
     # La TSDB écrite par la v3 n'est relisible que par >= 2.55 : passer par 2.55.1 garde un retour arrière possible.
     # v3.13.5 = branche LTS ; la dernière stable est v3.15.1 si tu préfères suivre le rythme normal.
-    image: prom/prometheus:v2.55.1
+    image: prom/prometheus:v3.13.5
     container_name: prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
