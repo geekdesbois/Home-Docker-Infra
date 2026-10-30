@@ -21,6 +21,17 @@ modules:
       follow_redirects: false
       fail_if_not_ssl: true
 
+  # Lecture du certificat même invalide/expiré (pour connaître sa date d'expiration).
+  # La validité réelle est testée par https_2xx.
+  tls_cert:
+    prober: tcp
+    timeout: 10s
+    tcp:
+      preferred_ip_protocol: ip4
+      tls: true
+      tls_config:
+        insecure_skip_verify: true
+
   dns_udp:
     prober: dns
     timeout: 5s

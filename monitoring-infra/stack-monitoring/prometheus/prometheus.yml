@@ -186,6 +186,23 @@ scrape_configs:
       - target_label: __address__
         replacement: blackbox-exporter:9115
 
+  # Expiration des certificats : mêmes services, en host:443
+  - job_name: blackbox-tls
+    metrics_path: /probe
+    scrape_interval: 5m
+    params:
+      module: [tls_cert]
+    static_configs:
+      - targets:
+          - "vault.zonelibre.live:443"      # TODO : mêmes FQDN que blackbox-https
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
   - job_name: blackbox-dns-udp
     metrics_path: /probe
     params:

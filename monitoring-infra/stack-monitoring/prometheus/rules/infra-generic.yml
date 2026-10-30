@@ -39,13 +39,40 @@ groups:
           description: "La sonde HTTPS vers {{ $labels.instance }} échoue depuis 5 min."
 
       - alert: TlsCertExpiresSoon
-        expr: probe_ssl_earliest_cert_expiry{job="blackbox-https"} - time() < 14 * 86400
+        expr: 3 * 86400 <= probe_ssl_earliest_cert_expiry{job="blackbox-tls"} - time() < 14 * 86400
         for: 1h
         labels:
           severity: warning
         annotations:
-          summary: "Certificat bientôt expiré : {{ $labels.instance }}"
-          description: "Le certificat servi par {{ $labels.instance }} expire dans {{ $value | humanizeDuration }} : vérifier le renouvellement ACME sur OPNsense."
+          summary: "Certificat expire dans moins de 14 j : {{ $labels.instance }}"
+          description: "Le certificat de {{ $labels.instance }} expire dans {{ $value | humanizeDuration }}. Le renouvellement ACME (OPNsense) aurait dû passer : vérifier ses logs."
+
+      - alert: TlsCertExpiresCritical
+        expr: 0 <= probe_ssl_earliest_cert_expiry{job="blackbox-tls"} - time() < 3 * 86400
+        for: 15m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Certificat expire dans moins de 3 j : {{ $labels.instance }}"
+          description: "Le certificat de {{ $labels.instance }} expire dans {{ $value | humanizeDuration }}."
+
+      - alert: TlsCertExpired
+        expr: probe_ssl_earliest_cert_expiry{job="blackbox-tls"} - time() < 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Certificat EXPIRÉ : {{ $labels.instance }}"
+          description: "Le certificat servi par {{ $labels.instance }} est expiré : les clients voient une erreur TLS."
+
+      - alert: TlsProbeFailed
+        expr: probe_success{job="blackbox-tls"} == 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Impossible de lire le certificat : {{ $labels.instance }}"
+          description: "La sonde TLS vers {{ $labels.instance }} échoue : les alertes d'expiration ne peuvent plus fonctionner pour ce service."
 
   # ---------------------------------------------------------------
   # Linux (node_exporter) — les filtres excluent les FS virtuels
