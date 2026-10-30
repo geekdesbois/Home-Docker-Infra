@@ -111,7 +111,7 @@ services:
   vmware-exporter:
     # Projet quasi abandonné : figer le digest qui tourne aujourd'hui plutôt que :latest
     # docker inspect --format '{{index .RepoDigests 0}}' pryorda/vmware_exporter:latest
-    image: pryorda/vmware_exporter@sha256:REMPLACER_PAR_LE_DIGEST_ACTUEL
+    image: pryorda/vmware_exporter@sha256:79925e63e59ffe962762697da3c9f14bc1c132e0b0ca873f75d0e2cadaff361e
     container_name: vmware-exporter
     env_file:
       - /etc/portainer-env/vmware-exporter.env
