@@ -20,6 +20,7 @@ services:
       - /docker/monitoring/prometheus/rules:/etc/prometheus/rules:ro
       - /docker/monitoring/prometheus/data:/prometheus
     restart: unless-stopped
+    stop_grace_period: 2m    
     ports:
       - "9090:9090"
     networks: [mon_net]
@@ -49,6 +50,7 @@ services:
       - /docker/monitoring/loki/loki-config.yml:/etc/loki/loki-config.yml:ro
       - /docker/monitoring/loki/data:/loki
     restart: unless-stopped
+    stop_grace_period: 1m    
     ports:
       - "3100:3100"
     networks: [mon_net]

@@ -194,7 +194,20 @@ scrape_configs:
       module: [tls_cert]
     static_configs:
       - targets:
-          - "vault.zonelibre.live:443"      # TODO : mêmes FQDN que blackbox-https
+          - "https://secrets.zonelibre.live:443"      # TODO : mêmes FQDN que blackbox-https
+          - "https://photos.zonelibre.live:443"
+          - "https://cloud.zonelibre.live:443"
+          - "https://files.zonelibre.live:443"
+          - "https://monitoring.zonelibre.live:443"
+          - "https://dns.zonelibre.live:443"
+          - "https://pdf.zonelibre.live:443"
+          - "https://firefox.zonelibre.live:443"
+          - "https://qbt.zonelibre.live:443"
+          - "https://convert.zonelibre.live:443"
+          - "https://cal.zonelibre.live:443"
+          - "https://card.zonelibre.live:443"
+          - "https://prog.nina.fm:443"
+          - "https://flux.nina.fm:443"
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
