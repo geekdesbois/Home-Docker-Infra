@@ -9,4 +9,5 @@ services:
       - "9100:9100"
     volumes:
       - "/:/host:ro,rslave"
+      - /var/lib/node_exporter/textfile:/textfile:ro
     restart: unless-stopped
