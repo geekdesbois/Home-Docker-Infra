@@ -26,7 +26,7 @@ services:
       - /docker/monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
       - /docker/monitoring/alertmanager/data:/alertmanager
     restart: unless-stopped
-    ports:
+#   ports:
 #     - "9093:9093"    
     networks: [mon_net]
 
@@ -88,7 +88,7 @@ services:
       - "--log.level=info"
     volumes:
       - /docker/monitoring/snmp-exporter/snmp.yml:/etc/snmp_exporter/snmp.yml:ro
-    ports:
+#   ports:
 #     - "9116:9116"      
     restart: unless-stopped
     networks: [mon_net]
@@ -98,7 +98,7 @@ services:
     container_name: vmware-exporter
     env_file:
       - /etc/portainer-env/vmware-exporter.env
-    ports:
+#   ports:
 #     - "9272:9272" 
     restart: unless-stopped
     networks: [mon_net]
