@@ -11,7 +11,7 @@ services:
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.path=/prometheus"
-      - "--storage.tsdb.retention.time=30d"
+      - "--storage.tsdb.retention.time=90d"
       - "--web.external-url=http://dock02-pwr.leahparnal.org:9090"
 #     - "--storage.tsdb.retention.size=40GB"   # garde-fou disque, optionnel
 #     - "--web.enable-lifecycle"

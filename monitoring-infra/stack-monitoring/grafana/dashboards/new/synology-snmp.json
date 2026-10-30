@@ -890,6 +890,198 @@
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
       },
+      "id": 25,
+      "type": "timeseries",
+      "title": "Volume 1 — évolution de l'espace utilisé (%)",
+      "description": "Échelle zoomée sur la plage affichée pour rendre la tendance lisible : regarder les valeurs de l'axe. Variation = écart entre début et fin de la période. Historique limité à la rétention Prometheus (30 j).",
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 29
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 1,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 80
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 15,
+            "gradientMode": "scheme",
+            "lineInterpolation": "smooth",
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisPlacement": "auto",
+            "thresholdsStyle": {
+              "mode": "dashed"
+            },
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "firstNotNull",
+            "lastNotNull",
+            "diff"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "refId": "A",
+          "legendFormat": "Volume 1",
+          "interval": "1m",
+          "expr": "100 * (1 - syno_storage_free_bytes{job=\"snmp-synology\",storageName=\"Volume 1\"} / syno_storage_total_bytes{job=\"snmp-synology\",storageName=\"Volume 1\"})"
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "id": 26,
+      "type": "timeseries",
+      "title": "Volume 2 — évolution de l'espace utilisé (%)",
+      "description": "Échelle zoomée sur la plage affichée pour rendre la tendance lisible : regarder les valeurs de l'axe. Variation = écart entre début et fin de la période. Historique limité à la rétention Prometheus (30 j).",
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 29
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 1,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 80
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 15,
+            "gradientMode": "scheme",
+            "lineInterpolation": "smooth",
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisPlacement": "auto",
+            "thresholdsStyle": {
+              "mode": "dashed"
+            },
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "firstNotNull",
+            "lastNotNull",
+            "diff"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "refId": "A",
+          "legendFormat": "Volume 2",
+          "interval": "1m",
+          "expr": "100 * (1 - syno_storage_free_bytes{job=\"snmp-synology\",storageName=\"Volume 2\"} / syno_storage_total_bytes{job=\"snmp-synology\",storageName=\"Volume 2\"})"
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "description": "Table disques (Temp + Statut). Pas de SMART. Colonnes nettoyées.",
       "fieldConfig": {
         "defaults": {
@@ -984,7 +1176,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 29
+        "y": 38
       },
       "id": 24,
       "options": {
@@ -1116,7 +1308,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 38
+        "y": 47
       },
       "id": 3,
       "panels": [],
@@ -1256,7 +1448,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 39
+        "y": 48
       },
       "id": 30,
       "options": {
@@ -1427,6 +1619,6 @@
   "timezone": "browser",
   "title": "Synology — SNMP (CPU, RAM, disques, RAID, réseau)",
   "uid": "efdt4sanqhp8geqsdf",
-  "version": 14,
+  "version": 15,
   "weekStart": ""
 }
