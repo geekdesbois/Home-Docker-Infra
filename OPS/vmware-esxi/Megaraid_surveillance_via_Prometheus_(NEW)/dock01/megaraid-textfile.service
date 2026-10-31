@@ -1,0 +1,9 @@
+[Unit]
+Description=Collecte état MegaRAID (storcli2 sur ESXi) pour node_exporter
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/megaraid-textfile.py
+Nice=10

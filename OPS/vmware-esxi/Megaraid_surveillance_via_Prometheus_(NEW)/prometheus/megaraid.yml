@@ -1,0 +1,115 @@
+groups:
+  # Contrôleur MegaRAID 9660-16i (superesxi8), collecté par DOCK01 via storcli2.
+  # Les métriques arrivent par le node_exporter de DOCK01 (textfile collector).
+  - name: megaraid
+    rules:
+      # --- la surveillance elle-même ---------------------------------------
+      - alert: MegaRaidCollectorFailing
+        expr: megaraid_collector_success == 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Collecte MegaRAID en échec"
+          description: "DOCK01 n'arrive plus à interroger storcli2 sur l'ESXi : journalctl -u megaraid-textfile.service sur DOCK01."
+
+      - alert: MegaRaidDataStale
+        expr: time() - megaraid_collector_last_success_timestamp_seconds > 900
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Plus de données RAID depuis {{ $value | humanizeDuration }}"
+          description: "L'état du RAID n'est plus surveillé : la dernière collecte réussie date de {{ $value | humanizeDuration }}."
+
+      # --- volumes ---------------------------------------------------------
+      - alert: MegaRaidVolumeNotOptimal
+        expr: megaraid_vd_info{state!="Optl"} == 1
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "RAID {{ $labels.name }} ({{ $labels.raid_type }}) : état {{ $labels.state }}"
+          description: "Le volume {{ $labels.name }} n'est plus optimal (Pdgd = partiellement dégradé, Dgrd = dégradé, OfLn = hors ligne). Voir l'alerte disque associée."
+
+      - alert: MegaRaidVolumeBadBlocks
+        expr: megaraid_vd_bad_blocks == 1
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "RAID {{ $labels.name }} : blocs défectueux"
+          description: "Le contrôleur signale des blocs défectueux sur {{ $labels.name }}."
+
+      - alert: MegaRaidWriteCacheDegraded
+        expr: megaraid_vd_writeback_degraded == 1
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "RAID {{ $labels.name }} repassé en write-through"
+          description: "Le cache d'écriture n'est plus en write-back (souvent l'energy pack) : les écritures sont nettement plus lentes."
+
+      # --- disques ---------------------------------------------------------
+      - alert: MegaRaidDriveNotOnline
+        expr: megaraid_pd_info{state="Conf", status!="Online"} == 1
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Disque {{ $labels.eid_slot }} : {{ $labels.status }}"
+          description: "{{ $labels.model }} (S/N {{ $labels.serial }}, slot {{ $labels.eid_slot }}, DG {{ $labels.dg }}) n'est plus Online."
+
+      - alert: MegaRaidDrivePredictiveFailure
+        expr: megaraid_pd_predictive_failures > 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Disque {{ $labels.eid_slot }} : défaillance prédite (SMART)"
+          description: "{{ $labels.model }} (slot {{ $labels.eid_slot }}) annonce une panne prochaine : prévoir son remplacement."
+
+      - alert: MegaRaidDriveMediaErrors
+        expr: increase(megaraid_pd_media_errors[24h]) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "Disque {{ $labels.eid_slot }} : nouvelles erreurs média"
+          description: "{{ $value | printf \"%.0f\" }} erreur(s) média en 24 h sur {{ $labels.model }} (slot {{ $labels.eid_slot }}). À surveiller : si ça continue, remplacer le disque."
+
+      - alert: MegaRaidHddHot
+        expr: megaraid_pd_temperature_celsius{media="HDD"} > 50
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Disque {{ $labels.eid_slot }} à {{ $value }} °C"
+          description: "{{ $labels.model }} dépasse 50 °C depuis 15 min : vérifier la ventilation du DAS."
+
+      - alert: MegaRaidSsdHot
+        expr: megaraid_pd_temperature_celsius{media="SSD"} > 70
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "NVMe {{ $labels.eid_slot }} à {{ $value }} °C"
+          description: "{{ $labels.model }} dépasse 70 °C depuis 15 min."
+
+      # --- contrôleur ------------------------------------------------------
+      - alert: MegaRaidEnergyPackNotOptimal
+        expr: megaraid_energy_pack_ok == 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Energy pack (supercap) : {{ $labels.status }}"
+          description: "La protection du cache d'écriture n'est plus garantie ; le contrôleur va basculer les volumes en write-through."
+
+      - alert: MegaRaidEnclosureNotOk
+        expr: megaraid_enclosure_ok == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Enclosure {{ $labels.eid }} : {{ $labels.state }}"
+          description: "Le contrôleur signale un problème sur l'enclosure {{ $labels.eid }}."
